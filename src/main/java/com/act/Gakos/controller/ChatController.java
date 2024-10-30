@@ -44,7 +44,7 @@ public class ChatController {
         Optional<User> receiverOptional = userRepository.findById(messageDto.getReceiverId());
 
         if (senderOptional.isEmpty() || receiverOptional.isEmpty()) {
-            logger.error("User not found: senderId: {}, receiverId: {}", messageDto.getSenderId(), messageDto.getReceiverId());
+            logger.error("User not found: senderId: {}, receivegbgrId: {}", messageDto.getSenderId(), messageDto.getReceiverId());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 

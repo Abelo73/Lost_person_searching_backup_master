@@ -22,10 +22,8 @@ public class UserDetails {
     private String placeOfBirth;
     private String growthPlace;
 
-    // One-to-One relationship with User
-//    @OneToOne(mappedBy = "user_details")
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
+
+
 
     @JsonIgnore
     @OneToOne
