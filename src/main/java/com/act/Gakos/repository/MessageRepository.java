@@ -13,13 +13,8 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    // Fetch messages by sender and receiver
-    List<Message> findBySenderAndReceiver(User sender, User receiver);
 
-    // Fetch unread messages for a specific receiver
-    List<Message> findUnreadMessagesByReceiver(User receiver);
 
-    // Custom query to fetch unread messages by receiver ID
 
     @Query(value = "SELECT * FROM message " +
             "WHERE receiver_id = :receiverId AND is_read = false", nativeQuery = true)
@@ -30,12 +25,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findMessagesBetweenUsers(@Param("senderId") Integer senderId,
                                            @Param("receiverId") Integer receiverId);
 
-//    List<Message> findMessagesBetweenUsers(Integer senderId, Integer receiverId);
+    int countByReceiverIdAndIsReadFalse(Integer receiver_id);
 
-//    @Query(value = "SELECT id, sender_id, receiver_id, content, sent_at,  FROM message " +
-//            "WHERE receiver_id = :receiverId AND is_read = false", nativeQuery = true)
-//    List<Message> findUnreadMessagesByReceiverId(@Param("receiverId") Long receiverId);
-//    @Query(value = "SELECT * AS sentAt FROM message " +
-//            "WHERE receiver_id = :receiverId AND is_read = false", nativeQuery = true)
-//    List<Message> findUnreadMessagesByReceiverId(@Param("receiverId") Long receiverId);
+
+    List<Message> findByReceiverIdAndSenderIdAndIsReadFalse(Long receiverId, Long senderId);
 }

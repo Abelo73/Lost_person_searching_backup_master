@@ -36,10 +36,7 @@ public class MessageService {
         return null; // You can throw an exception if you want to handle it differently
     }
 
-//    public List<Message> getUnreadMessages(Integer receiverId) {
-//        Optional<User> receiver = userRepository.findById(receiverId);
-//        return receiver.map(user -> messageRepository.findByReceiverAndIsReadFalse(user)).orElse(null);
-//    }
+
 
     public List<Message> getUnreadMessages(Long receiverId) {
         return messageRepository.findUnreadMessagesByReceiverId(receiverId);
@@ -55,7 +52,22 @@ public class MessageService {
         return null; // You can throw an exception if you want to handle it differently
     }
 
+
+    // Method to mark messages as read
+    public void markMessagesAsRead(Long receiverId, Long senderId) {
+        List<Message> messages = messageRepository.findByReceiverIdAndSenderIdAndIsReadFalse(receiverId, senderId);
+        for (Message message : messages) {
+            message.setIsRead(true);
+            messageRepository.save(message);
+        }
+    }
+
     public List<Message> getMessageHistory(Integer senderId, Integer receiverId) {
         return messageRepository.findMessagesBetweenUsers(senderId, receiverId);
     }
+
+    public int countUnreadMessages(Integer receiverId) {
+        return messageRepository.countByReceiverIdAndIsReadFalse(receiverId);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.act.Gakos.controller;
 
 import com.act.Gakos.dto.MessageDto;
 import com.act.Gakos.entity.Message;
+import com.act.Gakos.response.UnreadMessageResponse;
 import com.act.Gakos.service.MessageService;
 import com.act.Gakos.service.UserService;
 import org.hibernate.Hibernate;
@@ -26,22 +27,7 @@ public class MessageController {
     @Autowired
     private UserService userService;
 
-//    @PostMapping("/send")
-//    public ResponseEntity<Message> sendMessage(@RequestParam Integer senderId,
-//                                               @RequestParam Integer receiverId,
-//                                               @RequestBody Map<String, String> payload) {
-//
-//        String content = payload.get("content");
-//        logger.debug("Sending message from user ID {} to user ID {}: {}", senderId, receiverId, content);
-//        Message savedMessage = messageService.sendMessage(senderId, receiverId, content);
-//        if (savedMessage != null) {
-//            logger.info("Message sent successfully: {}", savedMessage);
-//            return ResponseEntity.ok(savedMessage);
-//        } else {
-//            logger.warn("Failed to send message. Sender or receiver not found.");
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//    }
+
 
     @PostMapping("/send")
     public ResponseEntity<Message> sendMessage(@RequestParam Integer senderId,
@@ -66,6 +52,14 @@ public class MessageController {
         }
     }
 
+    @PostMapping("/mark-as-read")
+    public ResponseEntity<Void> markMessagesAsRead(
+            @RequestParam Long receiverId,
+            @RequestParam Long senderId) {
+        messageService.markMessagesAsRead(receiverId, senderId);
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/unread/{receiverId}")
     public ResponseEntity<List<Message>> getUnreadMessages(@PathVariable Long receiverId) {
@@ -83,6 +77,16 @@ public class MessageController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/unread/count/{receiverId}")
+    public ResponseEntity<UnreadMessageResponse> countUnreadMessages(@PathVariable Integer receiverId) {
+        logger.debug("Counting unread messages for receiver ID {}", receiverId);
+        int unreadCount = messageService.countUnreadMessages(receiverId);
+        logger.info("Unread message count for receiver ID {}: {}", receiverId, unreadCount);
+        return ResponseEntity.ok(new UnreadMessageResponse(unreadCount));
+    }
+
+
 
     @PutMapping("/read/{messageId}")
     public ResponseEntity<Message> markMessageAsRead(@PathVariable Long messageId) {

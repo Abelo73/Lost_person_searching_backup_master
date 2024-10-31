@@ -24,21 +24,6 @@ public class CountryService {
     }
 
 
-//    public Page<Country> getCountryByCountryName(String countryName, Pageable pageable){
-//        return countryRepository.findByCountryName(countryName, pageable);
-//    }
-
-//    public Country addCountry(Country country) {
-//
-//        if (countryRepository.findByCountryName(country.getCountryName())){
-//            logger.info("Country with name '{}' already exists, skipping registartion." , country.getCountryName());
-//        }
-//        logger.info("Saving new country: {} ", country);
-//
-//        return countryRepository.save(country);
-
-//    }
-
     public Country addCountry(Country country) {
 
         // Check if country with the same name already exists
