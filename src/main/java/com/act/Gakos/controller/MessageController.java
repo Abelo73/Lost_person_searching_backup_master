@@ -54,12 +54,26 @@ public class MessageController {
 
     @PostMapping("/mark-as-read")
     public ResponseEntity<Void> markMessagesAsRead(
-            @RequestParam Long receiverId,
-            @RequestParam Long senderId) {
+            @RequestParam Integer receiverId,
+            @RequestParam Integer senderId) {
         messageService.markMessagesAsRead(receiverId, senderId);
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/unreadCount")
+    public ResponseEntity<UnreadMessageResponse> getUnreadMessageCount(
+            @RequestParam Integer senderId,
+            @RequestParam Integer receiverId) {
+        Integer unreadCount = Math.toIntExact(messageService.getUnreadMessageCount(senderId, receiverId));
+        return ResponseEntity.ok(new UnreadMessageResponse(unreadCount));
+    }
+
+
+    @GetMapping("/unread-count/{receiverId}")
+    public UnreadMessageResponse getUnreadMessageCounts(@PathVariable Long receiverId) {
+        return messageService.getUnreadMessageCounts(receiverId);
+    }
 
     @GetMapping("/unread/{receiverId}")
     public ResponseEntity<List<Message>> getUnreadMessages(@PathVariable Long receiverId) {

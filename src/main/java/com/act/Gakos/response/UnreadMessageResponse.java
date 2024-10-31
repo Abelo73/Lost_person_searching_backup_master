@@ -4,7 +4,7 @@ public class UnreadMessageResponse {
 
     private int unreadMessage;
 
-    public UnreadMessageResponse(int unreadMessage) {
+    public UnreadMessageResponse(Integer unreadMessage) {
         this.unreadMessage = unreadMessage;
     }
 
@@ -12,7 +12,7 @@ public class UnreadMessageResponse {
         return unreadMessage;
     }
 
-    public void setUnreadMessage(int unreadMessage) {
+    public void setUnreadMessage(Integer unreadMessage) {
         this.unreadMessage = unreadMessage;
     }
 }
