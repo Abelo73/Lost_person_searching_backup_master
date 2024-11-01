@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class KebeleController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-        Page<Kebele> kebeles = kebeleService.getKebeles(PageRequest.of(page, size));
+        Page<Kebele> kebeles = kebeleService.getKebeles(PageRequest.of(page, size, Sort.by("name").ascending()));
         logger.info("Fetched page {} of Kebeles with size {}", page, size);
         return ResponseEntity.ok(kebeles);
     }
@@ -69,7 +70,7 @@ public class KebeleController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<Kebele> kebeles = kebeleService.searchKebeleByWoredaName(searchTerm, pageable);
 
         // Convert the Page<Kebele> to Page<KebeleDto> if necessary, assuming you have a conversion method

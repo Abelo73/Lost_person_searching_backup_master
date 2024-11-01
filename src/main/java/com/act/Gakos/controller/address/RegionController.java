@@ -6,6 +6,7 @@ import com.act.Gakos.repository.address.RegionRepository;
 import com.act.Gakos.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class RegionController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Page<RegionDto> regions = regionService.getRegionsReg(searchTerm, page, size);
+        Page<RegionDto> regions = regionService.getRegionsReg(searchTerm, page, size, Sort.by("name").ascending());
         return new ResponseEntity<>(regions, HttpStatus.OK);
     }
 
@@ -57,7 +58,7 @@ public class RegionController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Page<Region> regions = regionService.getRegionsByCountry(country, searchTerm, page, size);
+        Page<Region> regions = regionService.getRegionsByCountry(country, searchTerm, page, size, Sort.by("name").ascending());
         return new ResponseEntity<>(regions, HttpStatus.OK);
     }
 

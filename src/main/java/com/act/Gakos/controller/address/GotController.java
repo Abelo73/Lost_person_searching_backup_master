@@ -6,6 +6,7 @@ import com.act.Gakos.service.address.GotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class GotController {
             @RequestParam(required = false) String zoneName,
             @RequestParam(required = false) String regionName
     ) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<GotDto> gotPage = gotService.getAllGots(pageRequest, kebeleName, woredaName, zoneName, regionName);
         return new ResponseEntity<>(gotPage, HttpStatus.OK);
     }

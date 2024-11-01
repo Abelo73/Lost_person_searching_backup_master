@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,8 @@ public class WoredaController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ){
-        Page<Woreda> woredas = woredaService.getWoredas(PageRequest.of(page, size));
-        logger.info("Fetched page {} of Woredas with size {}", page, size);
+        Page<Woreda> woredas = woredaService.getWoredas(PageRequest.of(page, size, Sort.by("name").ascending()));
+        logger.info("Fetched page {} of Woredas with size {}", page, size, Sort.by("countryName").ascending());
         return ResponseEntity.ok(woredas);
     }
 
@@ -69,7 +70,7 @@ public class WoredaController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<WoredaDto> woredasDto = woredaService.searchWoredas(searchTerm, pageable);
         return new ResponseEntity<>(woredasDto, HttpStatus.OK);
     }

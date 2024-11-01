@@ -6,6 +6,7 @@ import com.act.Gakos.entity.address.Zone;
 import com.act.Gakos.service.address.ZoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class ZoneController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Page<Zone> zones = zoneService.getZones(searchTerm, page, size);
+        Page<Zone> zones = zoneService.getZones(searchTerm, page, size, Sort.by("name").ascending());
         return new ResponseEntity<>(zones, HttpStatus.OK);
     }
 
@@ -39,7 +40,7 @@ public class ZoneController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Page<ZoneDto> regions = zoneService.searchZones(searchTerm, page, size);
+        Page<ZoneDto> regions = zoneService.searchZones(searchTerm, page, size, Sort.by("name").ascending());
         return new ResponseEntity<>(regions, HttpStatus.OK);
     }
     @PostMapping

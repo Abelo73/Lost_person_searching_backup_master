@@ -1,14 +1,10 @@
 package com.act.Gakos.service.address;
 
-import com.act.Gakos.dto.address.RegionDto;
 import com.act.Gakos.dto.address.ZoneDto;
 import com.act.Gakos.entity.address.Zone;
 import com.act.Gakos.repository.address.ZoneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +30,7 @@ public class ZoneService {
     }
 
     // New method for paginated and searchable zones
-    public Page<Zone> getZones(String searchTerm, int page, int size) {
+    public Page<Zone> getZones(String searchTerm, int page, int size, Sort name) {
         Pageable pageable = PageRequest.of(page, size);
         if (searchTerm == null || searchTerm.isEmpty()) {
             return zoneRepository.findAll(pageable);
@@ -42,8 +38,8 @@ public class ZoneService {
         return zoneRepository.findByNameContainingIgnoreCase(searchTerm, pageable);
     }
 
-    public Page<ZoneDto> searchZones(String searchTerm, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<ZoneDto> searchZones(String searchTerm, int page, int size, Sort name) {
+        Pageable pageable = PageRequest.of(page, size, name);
         Page<Zone> zonePage;
 
         if (searchTerm != null && !searchTerm.isEmpty()) {

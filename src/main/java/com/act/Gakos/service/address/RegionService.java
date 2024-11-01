@@ -4,10 +4,7 @@ import com.act.Gakos.dto.address.RegionDto;
 import com.act.Gakos.entity.address.Region;
 import com.act.Gakos.repository.address.RegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +32,8 @@ public class RegionService {
 //    }
 
 
-    public Page<RegionDto> getRegionsReg(String searchTerm, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<RegionDto> getRegionsReg(String searchTerm, int page, int size, Sort name) {
+        Pageable pageable = PageRequest.of(page, size, name);
 
         Page<Region> regionPage;
 
@@ -81,7 +78,7 @@ public class RegionService {
 
 
     // Get regions by country with optional search term and pagination
-    public Page<Region> getRegionsByCountry(String country, String searchTerm, int page, int size) {
+    public Page<Region> getRegionsByCountry(String country, String searchTerm, int page, int size, Sort name) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
         if (searchTerm != null && !searchTerm.isEmpty()) {
