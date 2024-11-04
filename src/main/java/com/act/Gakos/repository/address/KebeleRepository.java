@@ -1,6 +1,5 @@
 package com.act.Gakos.repository.address;
 
-import com.act.Gakos.dto.address.KebeleDto;
 import com.act.Gakos.entity.address.Kebele;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,6 +44,6 @@ public interface KebeleRepository extends JpaRepository<Kebele, Integer> {
     Page<Kebele> searchKebeleByWoredaName(String searchTerm, Pageable pageable);
 
 
-
+    Page<Kebele> findByWoredaId(Integer woredaId, Pageable pageable);
 
 }

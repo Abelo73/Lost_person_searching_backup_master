@@ -1,14 +1,13 @@
 package com.act.Gakos.controller.address;
 
 import com.act.Gakos.dto.address.WoredaDto;
+import com.act.Gakos.dto.address.ZoneDto;
+import com.act.Gakos.entity.address.Region;
 import com.act.Gakos.entity.address.Woreda;
 import com.act.Gakos.service.address.WoredaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +35,20 @@ public class WoredaController {
         logger.info("Fetched page {} of Woredas with size {}", page, size, Sort.by("countryName").ascending());
         return ResponseEntity.ok(woredas);
     }
+
+    @GetMapping
+    public ResponseEntity<Page<WoredaDto>> getWoredasByZone(
+            @RequestParam(name = "zoneId", required = true) Integer zoneId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        Page<WoredaDto> woredas = woredaService.getWoredasByZoneId(zoneId, PageRequest.of(page, size, Sort.by("name").ascending()));
+        logger.info("Fetched page {} of Woredas for zoneId {} with size {}", page, zoneId, size);
+        return ResponseEntity.ok(woredas);
+    }
+
+
+
 
     @PostMapping("/bulk")
     public ResponseEntity<?> addWoredas(@RequestBody List<Woreda> woredas){

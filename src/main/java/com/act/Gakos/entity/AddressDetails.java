@@ -1,5 +1,6 @@
 package com.act.Gakos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,39 +10,11 @@ public class AddressDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String currentAddress;
-    private String previousAddress;
-    private String placeOfBirth;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
-    public String getCurrentAddress() {
-        return currentAddress;
-    }
-
-    public void setCurrentAddress(String currentAddress) {
-        this.currentAddress = currentAddress;
-    }
-
-    public String getPreviousAddress() {
-        return previousAddress;
-    }
-
-    public void setPreviousAddress(String previousAddress) {
-        this.previousAddress = previousAddress;
-    }
-
-    public String getPlaceOfBirth() {
-        return placeOfBirth;
-    }
-
-    public void setPlaceOfBirth(String placeOfBirth) {
-        this.placeOfBirth = placeOfBirth;
-    }
 }

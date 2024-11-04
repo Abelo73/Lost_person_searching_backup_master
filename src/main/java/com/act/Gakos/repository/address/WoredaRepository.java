@@ -18,4 +18,6 @@ public interface WoredaRepository extends JpaRepository<Woreda, Integer> {
     @Query(value = "SELECT * FROM woreda WHERE LOWER(name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))",
             nativeQuery = true)
     Page<Woreda> searchWoredas(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+    Page<Woreda> findByZoneId(Integer zoneId, Pageable pageable);
 }

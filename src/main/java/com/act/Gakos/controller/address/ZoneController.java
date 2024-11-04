@@ -32,6 +32,12 @@ public class ZoneController {
         return new ResponseEntity<>(zones, HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ZoneDto>> getZonesByRegion(@RequestParam("regionId") Long regionId) {
+        List<ZoneDto> zones = zoneService.getZonesByRegionId(regionId);
+        return new ResponseEntity<>(zones, HttpStatus.OK);
+    }
+
     // Endpoint to add a new zone
 
     @GetMapping("/search/zone")

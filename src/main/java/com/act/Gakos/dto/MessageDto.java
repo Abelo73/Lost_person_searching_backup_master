@@ -16,6 +16,7 @@ public class MessageDto {
     private String content;
     private Integer senderId;
     private Integer receiverId;
+//    private String receiverName;
 
     public MessageDto(Long id, String content, Integer senderId, Integer receiverId) {
         this.id = id;

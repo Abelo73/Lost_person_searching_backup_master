@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ public class ChatController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/chat.send")
     @SendTo("/topic/messages")
@@ -86,4 +90,16 @@ public class ChatController {
         messageRepository.save(message);
         logger.info("Message with id: {} marked as read", messageId);
     }
+
+
+    @MessageMapping("/group/public")
+    @SendTo("/chatroom/public")
+    public MessageDto receiveMessage(@Payload MessageDto messageDto){
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(messageDto.getReceiverId()), "/private", messageDto);
+        return messageDto;
+    }
+
+
+
+
 }

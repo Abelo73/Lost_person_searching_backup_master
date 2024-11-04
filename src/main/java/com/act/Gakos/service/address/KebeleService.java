@@ -84,4 +84,19 @@ public class KebeleService {
             return kebeleRepository.findAll(pageable);
         }
     }
+
+    // Method to get Kebeles by Woreda ID with pagination
+    public Page<KebeleDto> getKebelesByWoredaId(Integer woredaId, Pageable pageable) {
+        Page<Kebele> kebeles = kebeleRepository.findByWoredaId(woredaId, pageable);
+
+        // Convert Page<Kebele> to Page<KebeleDto>
+        return kebeles.map(this::convertToDto);
+    }
+
+    private KebeleDto convertToDto(Kebele kebele) {
+        return new KebeleDto(
+                kebele.getId(),
+                kebele.getName()
+        );
+    }
 }

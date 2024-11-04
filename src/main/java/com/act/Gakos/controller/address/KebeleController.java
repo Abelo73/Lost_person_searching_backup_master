@@ -37,6 +37,20 @@ public class KebeleController {
         return ResponseEntity.ok(kebeles);
     }
 
+
+    @GetMapping
+    public ResponseEntity<Page<KebeleDto>> getKebelesByWoredaId(
+            @RequestParam(value = "woredaId") Integer woredaId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<KebeleDto> kebeleDtos = kebeleService.getKebelesByWoredaId(woredaId, pageable);
+        logger.info("Fetched Kebeles for Woreda ID {} on page {}", woredaId, page);
+
+        return ResponseEntity.ok(kebeleDtos);
+    }
+
     @PostMapping("/bulk")
     public ResponseEntity<?> addKebeles(@RequestBody List<Kebele> kebeles) {
         List<Kebele> savedKebeles = kebeleService.addKebeles(kebeles);

@@ -6,6 +6,8 @@ import com.act.Gakos.repository.address.RegionRepository;
 import com.act.Gakos.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,15 +52,26 @@ public class RegionController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Endpoint to get paginated regions by country with optional search by name or description
+
+
     @GetMapping
     public ResponseEntity<Page<Region>> getRegions(
-            @RequestParam(value = "country", defaultValue = "Ethiopia") String country,
+            @RequestParam(value = "countryId", required = false) Integer countryId,
             @RequestParam(value = "searchTerm", required = false) String searchTerm,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Page<Region> regions = regionService.getRegionsByCountry(country, searchTerm, page, size, Sort.by("name").ascending());
+        Page<Region> regions;
+
+        if (countryId != null) {
+            // If countryId is provided, fetch regions by countryId
+            List<Region> regionList = regionService.getRegionsByCountryId(countryId);
+            regions = new PageImpl<>(regionList, PageRequest.of(page, size), regionList.size());
+        } else {
+            // Existing logic to get regions by country (if no countryId is provided)
+            regions = regionService.getRegionsByCountry("Ethiopia", searchTerm, page, size, Sort.by("name").ascending());
+        }
+
         return new ResponseEntity<>(regions, HttpStatus.OK);
     }
 

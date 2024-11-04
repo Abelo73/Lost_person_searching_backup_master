@@ -11,6 +11,11 @@ public class WoredaDto {
         this.description = description;
     }
 
+    public WoredaDto() {
+
+    }
+
+
     public Integer getId() {
         return id;
     }

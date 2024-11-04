@@ -89,4 +89,8 @@ public class RegionService {
             return regionRepository.findByCountry(country, pageRequest);
         }
     }
+
+    public List<Region> getRegionsByCountryId(Integer countryId) {
+        return regionRepository.findByCountryId(countryId);
+    }
 }

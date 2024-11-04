@@ -59,6 +59,14 @@ public class ZoneService {
         return new PageImpl<>(zoneDtos, pageable, zonePage.getTotalElements());
     }
 
+
+    public List<ZoneDto> getZonesByRegionId(Long regionId) {
+        List<Zone> zones = zoneRepository.findByRegionId(regionId);
+        return zones.stream()
+                .map(zone -> new ZoneDto(zone.getId(), zone.getName(), zone.getDescription())) // Assuming ZoneDto has an ID and Name
+                .collect(Collectors.toList());
+    }
+
     // Method to convert Zone entity to ZoneDto
     private ZoneDto convertToDto(Zone zone) {
         return new ZoneDto(
@@ -67,4 +75,6 @@ public class ZoneService {
                 zone.getDescription()
         );
     }
+
+
 }

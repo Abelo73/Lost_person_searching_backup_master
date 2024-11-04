@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RegionRepository extends JpaRepository<Region, Integer> {
     Page<Region> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String searchTerm, String searchTerm1, Pageable pageable);
@@ -17,4 +19,6 @@ public interface RegionRepository extends JpaRepository<Region, Integer> {
     Page<Region> findByCountryAndNameContainingIgnoreCase(String country, String searchTerm, PageRequest pageRequest);
 
     Page<Region> findByCountry(String country, PageRequest pageRequest);
+
+    List<Region> findByCountryId(Integer countryId);
 }

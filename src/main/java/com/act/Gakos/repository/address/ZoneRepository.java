@@ -5,10 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ZoneRepository extends JpaRepository<Zone, Long> {
     boolean existsByNameAndRegionId(String name, Long regionId);
 
     Page<Zone> findByNameContainingIgnoreCase(String searchTerm, Pageable pageable);
 
     Page<Zone> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String searchTerm, String searchTerm1, Pageable pageable);
+
+    List<Zone> findByRegionId(Long regionId);
 }
