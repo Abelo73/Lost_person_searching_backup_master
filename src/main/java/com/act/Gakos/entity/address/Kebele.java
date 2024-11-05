@@ -10,10 +10,11 @@ public class Kebele {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-//    private String descriptions;
+    private String woredaName;
     @ManyToOne
     @JoinColumn(name = "woreda_id")
     private Woreda woreda;
+
 
     public Integer getId() {
         return id;
@@ -31,13 +32,14 @@ public class Kebele {
         this.name = name;
     }
 
-//    public String getDescriptions() {
-//        return descriptions;
-//    }
-//
-//    public void setDescriptions(String descriptions) {
-//        this.descriptions = descriptions;
-//    }
+
+    public String getWoredaName() {
+        return woreda != null ? woreda.getName() : null; // Check for null to avoid NullPointerException
+    }
+
+    public void setWoredaName(String woredaName) {
+        this.woredaName = woredaName;
+    }
 
     public Woreda getWoreda() {
         return woreda;
@@ -52,12 +54,10 @@ public class Kebele {
         return "Kebele{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-//                ", descriptions='" + descriptions + '\'' +
+                ", woredaName='" + woredaName + '\'' +
                 ", woreda=" + woreda +
                 '}';
     }
 
-//    public String getDescription() {
-//        return descriptions;
-//    }
+
 }

@@ -63,7 +63,8 @@ public class KebeleService {
         // Convert Woreda entities to WoredaDto
         Page<KebeleDto> kebeleDtos = kebelePages.map(kebele -> new KebeleDto(
                 kebele.getId(),
-                kebele.getName()
+                kebele.getName(),
+                kebele.getWoredaName()
         ));
 
         logger.info("Returning paginated result of Woredas - Page number: {}, Page size: {}",
@@ -96,7 +97,8 @@ public class KebeleService {
     private KebeleDto convertToDto(Kebele kebele) {
         return new KebeleDto(
                 kebele.getId(),
-                kebele.getName()
+                kebele.getName(),
+                kebele.getWoredaName()
         );
     }
 }

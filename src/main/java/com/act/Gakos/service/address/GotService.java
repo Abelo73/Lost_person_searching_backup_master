@@ -50,7 +50,8 @@ public class GotService {
                 got.getId(),
                 got.getName(),
                 got.getNickname(),
-                got.getDescription()
+                got.getDescription(),
+                got.getKebeleName()
         );
     }
 

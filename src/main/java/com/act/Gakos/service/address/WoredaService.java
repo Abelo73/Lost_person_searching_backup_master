@@ -74,7 +74,13 @@ public class WoredaService {
         }
 
         // Convert Woreda entities to WoredaDto
-        Page<WoredaDto> woredasDtoPage = woredasPage.map(woreda -> new WoredaDto(woreda.getId(), woreda.getName(), woreda.getDescription()));
+        Page<WoredaDto> woredasDtoPage = woredasPage.map(woreda -> new WoredaDto(
+                woreda.getId(),
+                woreda.getName(),
+                woreda.getDescription(),
+                woreda.getZoneName()
+
+        ));
 
         logger.info("Returning paginated result of Woredas - Page number: {}, Page size: {}",
                 pageable.getPageNumber(), pageable.getPageSize());

@@ -13,6 +13,8 @@ public class Woreda {
     private Integer id;
     private String name;
     private String description;
+    private String zoneName;
+
 
     @ManyToOne
     @JoinColumn(name = "zone_id")
@@ -50,6 +52,14 @@ public class Woreda {
         this.zone = zone;
     }
 
+    public void setZoneName(String zoneName) {
+        this.zoneName = zoneName;
+    }
+
+    public String getZoneName() {
+        return zone != null ? zone.getName() : null; // Check for null to avoid NullPointerException
+    }
+
     @Override
     public String toString() {
         return "Woreda{" +
@@ -57,6 +67,7 @@ public class Woreda {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", zone=" + zone +
+                ", zoneName=" + zoneName +
                 '}';
     }
 }

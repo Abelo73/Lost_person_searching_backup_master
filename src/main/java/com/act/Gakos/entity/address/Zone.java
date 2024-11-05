@@ -12,7 +12,6 @@ public class Zone {
 
     private String name;
     private String description;
-
     @ManyToOne
     @JoinColumn(name = "region_id") // Specifies foreign key column
     private Region region;
@@ -48,5 +47,9 @@ public class Zone {
 
     public void setRegion(Region region) {
         this.region = region;
+    }
+
+    public String getRegionName() {
+        return region != null ? region.getName() : null; // Check for null to avoid NullPointerException
     }
 }

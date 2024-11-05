@@ -4,12 +4,12 @@ public class KebeleDto {
 
     private Integer id;
     private String name;
-//    private String description;
+    private String woredaName;
 
-
-    public KebeleDto(Integer id, String name) {
+    public KebeleDto(Integer id, String name, String woredaName) {
         this.id = id;
         this.name = name;
+        this.woredaName = woredaName;
     }
 
 
@@ -31,12 +31,21 @@ public class KebeleDto {
     }
 
 
+    public String getWoredaName() {
+        return woredaName;
+    }
+
+    public void setWoredaName(String woredaName) {
+        this.woredaName = woredaName;
+    }
 
     @Override
     public String toString() {
         return "KebeleDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", woredaName='" + woredaName + '\'' +
+
                 '}';
     }
 }

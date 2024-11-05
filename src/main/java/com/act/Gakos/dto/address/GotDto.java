@@ -5,12 +5,14 @@ public class GotDto {
     private String name;
     private String nickname;
     private String description;
+    private String kebeleName;
 
-    public GotDto(Integer id, String name, String nickname, String description) {
+    public GotDto(Integer id, String name, String nickname, String description, String kebeleName) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
         this.description = description;
+        this.kebeleName = kebeleName;
     }
 
     public Integer getId() {
@@ -43,5 +45,13 @@ public class GotDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getKebeleName() {
+        return kebeleName;
+    }
+
+    public void setKebeleName(String kebeleName) {
+        this.kebeleName = kebeleName;
     }
 }

@@ -12,18 +12,19 @@ public class Got {
     private String name;
     private String nickname;
     private String description;
-
+    private String kebeleName;
     @ManyToOne
     @JoinColumn(name = "kebele_id")
     private Kebele kebele;
 
 
-    public Got(Integer id, String name, String nickname, String description, Kebele kebele) {
+    public Got(Integer id, String name, String nickname, String description, Kebele kebele, String kebeleName) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
         this.description = description;
         this.kebele = kebele;
+        this.kebeleName = kebeleName;
     }
 
     public Got() {
@@ -70,6 +71,19 @@ public class Got {
         this.kebele = kebele;
     }
 
+
+
+
+    public void setKebeleName(String kebeleName) {
+        this.kebeleName = kebeleName;
+    }
+
+
+    public String getKebeleName() {
+        return kebele != null ? kebele.getName() : null; // Check for null to avoid NullPointerException
+    }
+
+
     @Override
     public String toString() {
         return "Got{" +
@@ -78,6 +92,8 @@ public class Got {
                 ", nickname='" + nickname + '\'' +
                 ", description='" + description + '\'' +
                 ", kebele=" + kebele +
+                ", kebeleName='" + kebeleName + '\'' +
+
                 '}';
     }
 }

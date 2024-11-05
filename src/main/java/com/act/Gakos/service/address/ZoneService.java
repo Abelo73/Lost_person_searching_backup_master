@@ -63,7 +63,7 @@ public class ZoneService {
     public List<ZoneDto> getZonesByRegionId(Long regionId) {
         List<Zone> zones = zoneRepository.findByRegionId(regionId);
         return zones.stream()
-                .map(zone -> new ZoneDto(zone.getId(), zone.getName(), zone.getDescription())) // Assuming ZoneDto has an ID and Name
+                .map(zone -> new ZoneDto(zone.getId(), zone.getName(), zone.getDescription(), zone.getRegionName())) // Assuming ZoneDto has an ID and Name
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +72,8 @@ public class ZoneService {
         return new ZoneDto(
                 zone.getId(),
                 zone.getName(),
-                zone.getDescription()
+                zone.getDescription(),
+                zone.getRegionName()
         );
     }
 

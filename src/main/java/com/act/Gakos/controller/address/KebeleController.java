@@ -96,7 +96,8 @@ public class KebeleController {
     private KebeleDto convertToDto(Kebele kebele) {
         return new KebeleDto(
                 kebele.getId(),
-                kebele.getName()
+                kebele.getName(),
+                kebele.getWoredaName()
         );
     }
 
