@@ -1,35 +1,33 @@
 package com.act.Gakos.entity.address;
 
-
+import com.act.Gakos.entity.address.Kebele;
 import jakarta.persistence.*;
 
 @Entity(name = "got")
-@Table
+@Table(name = "got")
 public class Got {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String name;
     private String nickname;
     private String description;
-    private String kebeleName;
+
     @ManyToOne
-    @JoinColumn(name = "kebele_id")
+    @JoinColumn(name = "kebele_id", referencedColumnName = "id") // Mapping kebele as a ManyToOne relationship
     private Kebele kebele;
 
-
-    public Got(Integer id, String name, String nickname, String description, Kebele kebele, String kebeleName) {
+    public Got(Integer id, String name, String nickname, String description, Kebele kebele) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
         this.description = description;
         this.kebele = kebele;
-        this.kebeleName = kebeleName;
     }
 
-    public Got() {
-
-    }
+    public Got() {}
 
     public Integer getId() {
         return id;
@@ -71,18 +69,10 @@ public class Got {
         this.kebele = kebele;
     }
 
-
-
-
-    public void setKebeleName(String kebeleName) {
-        this.kebeleName = kebeleName;
+    // Getter method to retrieve kebele_id directly, without mapping it as a separate field
+    public Integer getKebeleId() {
+        return kebele != null ? kebele.getId() : null;
     }
-
-
-    public String getKebeleName() {
-        return kebele != null ? kebele.getName() : null; // Check for null to avoid NullPointerException
-    }
-
 
     @Override
     public String toString() {
@@ -91,9 +81,7 @@ public class Got {
                 ", name='" + name + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", description='" + description + '\'' +
-                ", kebele=" + kebele +
-                ", kebeleName='" + kebeleName + '\'' +
-
+                ", kebele=" + (kebele != null ? kebele.getId() : null) +
                 '}';
     }
 }

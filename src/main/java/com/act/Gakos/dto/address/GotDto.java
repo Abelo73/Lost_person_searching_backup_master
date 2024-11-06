@@ -15,6 +15,11 @@ public class GotDto {
         this.kebeleName = kebeleName;
     }
 
+    public GotDto() {
+
+    }
+
+
     public Integer getId() {
         return id;
     }

@@ -1,6 +1,7 @@
 package com.act.Gakos.controller.address;
 
 import com.act.Gakos.dto.address.KebeleDto;
+import com.act.Gakos.dto.address.KebeleSearchDto;
 import com.act.Gakos.dto.address.WoredaDto;
 import com.act.Gakos.entity.address.Kebele;
 import com.act.Gakos.service.address.KebeleService;
@@ -74,7 +75,56 @@ public class KebeleController {
         return ResponseEntity.ok(savedKebele);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<KebeleDto>> searchKebele(
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String region,
+            @RequestParam(required = false) String zone,
+            @RequestParam(required = false) String woreda,
+            @RequestParam(required = false) String kebele,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
+        Pageable pageable = PageRequest.of(page, size);
+        Page<KebeleDto> kebeles = kebeleService.searchKebeleNew(country, region, zone, woreda, kebele, pageable);
+        return ResponseEntity.ok(kebeles);
+    }
+
+
+//    @GetMapping("/search/new")  // Endpoint for searching kebeles
+//    public ResponseEntity<Page<KebeleDto>> searchKebele(
+//            @RequestParam(required = false) Long zoneId,
+//            @RequestParam(required = false) Long woredaId,
+//            @RequestParam(required = false) Long regionId,
+//            @RequestParam(required = false) Long countryId,
+//            Pageable pageable) {
+//
+//        Page<KebeleDto> kebeles = kebeleService.searchKebeleByCriteria(zoneId, woredaId, regionId, countryId, pageable);
+//        return ResponseEntity.ok(kebeles);
+//    }
+
+//    @GetMapping("/search/new")
+//    public ResponseEntity<Page<KebeleSearchDto>> searchKebele(
+//            @RequestParam(required = false) Long zoneId,
+//            @RequestParam(required = false) Long woredaId,
+//            @RequestParam(required = false) Long regionId,
+//            @RequestParam(required = false) Long countryId,
+//            @RequestParam(defaultValue = "10") int limit, // Default limit if not provided
+//            Pageable pageable) {
+//
+//        Page<KebeleSearchDto> results = kebeleService.searchKebeleByCriteria(zoneId, woredaId, regionId, countryId, pageable);
+//        return ResponseEntity.ok(results);
+//    }
+
+    @GetMapping("/search/new")
+    public Page<KebeleDto> searchKebele(
+            @RequestParam(value = "woreda", required = false) Long woreda,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return kebeleService.searchKebeleByCriteria(woreda, pageable);
+    }
 
 
     // Endpoint for searching Kebeles by Woreda name
@@ -97,7 +147,10 @@ public class KebeleController {
         return new KebeleDto(
                 kebele.getId(),
                 kebele.getName(),
-                kebele.getWoredaName()
+                kebele.getWoredaName(),
+                kebele.getWoreda().getZoneName(),
+                kebele.getWoreda().getZone().getRegionName(),
+                kebele.getWoreda().getZone().getRegion().getCountry().getCountryName()
         );
     }
 

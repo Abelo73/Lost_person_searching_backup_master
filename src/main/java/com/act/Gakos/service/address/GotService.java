@@ -1,7 +1,9 @@
 package com.act.Gakos.service.address;
 
 import com.act.Gakos.dto.address.GotDto;
+import com.act.Gakos.dto.address.KebeleDto;
 import com.act.Gakos.entity.address.Got;
+import com.act.Gakos.entity.address.Kebele;
 import com.act.Gakos.repository.address.GotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,7 +53,7 @@ public class GotService {
                 got.getName(),
                 got.getNickname(),
                 got.getDescription(),
-                got.getKebeleName()
+                got.getKebele().getName()
         );
     }
 
@@ -78,4 +80,72 @@ public class GotService {
     public void deleteGot(Integer id) {
         gotRepository.deleteById(id);
     }
+
+    public Page<GotDto> findGotByKebeleId(Long kebeleId, Pageable pageable) {
+        Page<Got> gotPage;
+        if (kebeleId != null) {
+            gotPage = gotRepository.findByKebeleId(kebeleId, pageable);
+        } else {
+            gotPage = gotRepository.findAll(pageable);
+        }
+        return gotPage.map(this::convertToDto);
+    }
+
+    private GotDto convertToDto(Got got) {
+        GotDto gotDto = new GotDto();
+        gotDto.setId(got.getId());
+        gotDto.setName(got.getName());
+        gotDto.setNickname(got.getNickname());
+        gotDto.setDescription(got.getDescription());
+        gotDto.setKebeleName(got.getKebele() != null ? got.getKebele().getName() : null);
+        return gotDto;
+    }
+
+
+
+
+    private KebeleDto convertToDto(Kebele kebele) {
+        return new KebeleDto(
+                kebele.getId(),
+                kebele.getName(),
+                kebele.getWoredaName(),
+                kebele.getWoreda().getZoneName(),
+                kebele.getWoreda().getZone().getRegionName(),
+                kebele.getWoreda().getZone().getRegion().getCountry().getCountryName()
+        );
+    }
+
+//    public Page<KebeleDto> searchKebeleNew(String country, String region,String zone, String woreda, String kebele, Pageable pageable) {
+//        Page<Kebele> kebeles = kebeleRepository.searchKebeleNew(country, region, zone, woreda, kebele, pageable);
+//        return kebeles.map(this::convertToDto);
+//    }
+
+
+    public Page<GotDto> searchKebeleByCriteria(Long kebeleId, Pageable pageable) {
+        return gotRepository.searchGotByCriteria(kebeleId, pageable);
+    }
+
+//    public Page<GotDto> findGotByKebeleId(Long kebeleId, Pageable pageable) {
+//        Page<Got> gotPage;
+//        if (kebeleId != null) {
+//            gotPage = gotRepository.findByKebeleId(kebeleId, pageable);
+//        } else {
+//            gotPage = gotRepository.findAll(pageable);
+//        }
+//
+//        // Convert the Got entities to GotDto objects
+//        return gotPage.map(this::convertToDto);
+//    }
+//
+//    // Conversion method from Got entity to GotDto
+//    private GotDto convertToDto(Got got) {
+//        GotDto gotDto = new GotDto();
+//        gotDto.setId(got.getId());
+//        gotDto.setName(got.getName());
+//        gotDto.setNickname(got.getNickname());
+//        gotDto.setDescription(got.getDescription());
+//        gotDto.setKebeleName(got.getKebele() != null ? got.getKebele().getName() : null); // Assuming Kebele has a name property
+//        return gotDto;
+//    }
+
 }

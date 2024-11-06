@@ -1,11 +1,13 @@
 package com.act.Gakos.controller.address;
 
 import com.act.Gakos.dto.address.GotDto;
+import com.act.Gakos.dto.address.KebeleDto;
 import com.act.Gakos.entity.address.Got;
 import com.act.Gakos.service.address.GotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +53,42 @@ public class GotController {
         return gotService.getGotById(id)
                 .map(got -> new ResponseEntity<>(got, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+
+//    @GetMapping("/search")
+//    public ResponseEntity<Page<GotDto>> getGotByKebeleId(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(required = false) Long kebeleId
+//    ) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("name").ascending());
+//        Page<GotDto> gotDtoPage = gotService.findGotByKebeleId(kebeleId, pageRequest);
+//
+//        return new ResponseEntity<>(gotDtoPage, HttpStatus.OK);
+//    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<GotDto>> getGotByKebeleId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long kebeleId
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("name").ascending());
+        Page<GotDto> gotDtoPage = gotService.findGotByKebeleId(kebeleId, pageRequest);
+
+        return new ResponseEntity<>(gotDtoPage, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/search/new")
+    public Page<GotDto> searchKebele(
+            @RequestParam(value = "got", required = false) Long got,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return gotService.searchKebeleByCriteria(got, pageable);
     }
 
     @PostMapping

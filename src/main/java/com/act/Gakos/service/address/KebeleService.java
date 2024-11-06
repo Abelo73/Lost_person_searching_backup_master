@@ -1,6 +1,7 @@
 package com.act.Gakos.service.address;
 
 import com.act.Gakos.dto.address.KebeleDto;
+import com.act.Gakos.dto.address.KebeleSearchDto;
 import com.act.Gakos.entity.address.Kebele;
 import com.act.Gakos.repository.address.KebeleRepository;
 import org.slf4j.Logger;
@@ -64,13 +65,17 @@ public class KebeleService {
         Page<KebeleDto> kebeleDtos = kebelePages.map(kebele -> new KebeleDto(
                 kebele.getId(),
                 kebele.getName(),
-                kebele.getWoredaName()
+                kebele.getWoredaName(),
+                kebele.getWoreda().getZoneName(),
+                kebele.getWoreda().getZone().getRegionName(),
+                kebele.getWoreda().getZone().getRegion().getCountry().getCountryName()
         ));
 
         logger.info("Returning paginated result of Woredas - Page number: {}, Page size: {}",
                 pageable.getPageNumber(), pageable.getPageSize());
         return kebeleDtos;
     }
+    
 
 
 
@@ -98,7 +103,27 @@ public class KebeleService {
         return new KebeleDto(
                 kebele.getId(),
                 kebele.getName(),
-                kebele.getWoredaName()
+                kebele.getWoredaName(),
+                kebele.getWoreda().getZoneName(),
+                kebele.getWoreda().getZone().getRegionName(),
+                kebele.getWoreda().getZone().getRegion().getCountry().getCountryName()
         );
     }
+
+    public Page<KebeleDto> searchKebeleNew(String country, String region,String zone, String woreda, String kebele, Pageable pageable) {
+        Page<Kebele> kebeles = kebeleRepository.searchKebeleNew(country, region, zone, woreda, kebele, pageable);
+        return kebeles.map(this::convertToDto);
+    }
+
+
+    public Page<KebeleDto> searchKebeleByCriteria(Long woredaId, Pageable pageable) {
+        return kebeleRepository.searchKebeleByCriteria(woredaId, pageable);
+    }
+
+
+
+
+//    private KebeleDto convertToDto(Kebele kebele) {
+//        return new KebeleDto(kebele.getId().intValue(), kebele.getName(), kebele.getWoredaName());
+//    }
 }
