@@ -68,7 +68,7 @@ public class GotController {
 //        return new ResponseEntity<>(gotDtoPage, HttpStatus.OK);
 //    }
 
-    @GetMapping("/search")
+    @GetMapping("/search/kebeleId")
     public ResponseEntity<Page<GotDto>> getGotByKebeleId(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -78,6 +78,18 @@ public class GotController {
         Page<GotDto> gotDtoPage = gotService.findGotByKebeleId(kebeleId, pageRequest);
 
         return new ResponseEntity<>(gotDtoPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public Page<GotDto> searchGotByKebeleId(
+            @RequestParam(value = "kebele", required = false) Integer kebele,
+            @RequestParam(value = "woreda", required = false) Integer woreda,
+            @RequestParam(value = "zone", required = false) Integer zone,
+            @RequestParam(value = "region", required = false) Integer region,
+            @RequestParam(value = "country", required = false) Integer country,
+
+            Pageable pageable) {
+        return gotService.searchGotByKebeleId(kebele,woreda,zone,region, country, pageable);
     }
 
 

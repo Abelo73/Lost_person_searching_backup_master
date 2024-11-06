@@ -93,4 +93,8 @@ public class RegionService {
     public List<Region> getRegionsByCountryId(Integer countryId) {
         return regionRepository.findByCountryId(countryId);
     }
+
+    public Page<RegionDto> searchRegionByCountryId(Long countryId, Pageable pageable) {
+        return regionRepository.searchRegionByCountryId(countryId, pageable);
+    }
 }

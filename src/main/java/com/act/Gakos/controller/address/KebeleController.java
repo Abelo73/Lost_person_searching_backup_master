@@ -119,11 +119,14 @@ public class KebeleController {
     @GetMapping("/search/new")
     public Page<KebeleDto> searchKebele(
             @RequestParam(value = "woreda", required = false) Long woreda,
+            @RequestParam(value = "zone", required = false) Long zone,
+            @RequestParam(value = "region", required = false) Long region,
+            @RequestParam(value = "country", required = false) Long country,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        return kebeleService.searchKebeleByCriteria(woreda, pageable);
+        return kebeleService.searchKebeleByCriteria(woreda, zone,region, country, pageable);
     }
 
 

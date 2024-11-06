@@ -110,4 +110,9 @@ public class WoredaService {
         // Set other fields as necessary
         return dto;
     }
+
+
+    public Page<WoredaDto> searchWoredaByZoneId(Integer zoneId, Pageable pageable) {
+        return woredaRepository.searchWoredaByZoneId(zoneId, pageable);
+    }
 }

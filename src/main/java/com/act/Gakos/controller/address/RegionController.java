@@ -5,10 +5,7 @@ import com.act.Gakos.entity.address.Region;
 import com.act.Gakos.repository.address.RegionRepository;
 import com.act.Gakos.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -97,6 +94,12 @@ public class RegionController {
         return new ResponseEntity<>(results, HttpStatus.CREATED);
     }
 
+    @GetMapping("/search")
+    public Page<RegionDto> searchRegionByCountryId(
+            @RequestParam(value = "country", required = false) Long country,
+            Pageable pageable) {
+        return regionService.searchRegionByCountryId(country, pageable);
+    }
 
 
 }

@@ -81,6 +81,11 @@ public class GotService {
         gotRepository.deleteById(id);
     }
 
+
+    public Page<GotDto> searchGotByKebeleId(Integer kebeleId, Integer woredaId, Integer zoneId, Integer regionId, Integer countryId, Pageable pageable) {
+        return gotRepository.searchGotByKebeleId(kebeleId,woredaId,zoneId, regionId, countryId, pageable);
+    }
+
     public Page<GotDto> findGotByKebeleId(Long kebeleId, Pageable pageable) {
         Page<Got> gotPage;
         if (kebeleId != null) {

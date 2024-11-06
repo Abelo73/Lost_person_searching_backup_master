@@ -78,4 +78,9 @@ public class ZoneService {
     }
 
 
+    public Page<ZoneDto> searchZoneByRegionId(Long regionId, Pageable pageable) {
+        return zoneRepository.searchZoneByRegionId(regionId, pageable);
+    }
+
+
 }

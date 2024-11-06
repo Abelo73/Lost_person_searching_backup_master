@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +23,9 @@ public interface RegionRepository extends JpaRepository<Region, Integer> {
     Page<Region> findByCountry(String country, PageRequest pageRequest);
 
     List<Region> findByCountryId(Integer countryId);
+
+    @Query("SELECT new com.act.Gakos.dto.address.RegionDto(r.id, r.name, r.description) " +
+            "FROM region r " +
+            "WHERE (:countryId IS NULL OR r.country.id = :countryId)")
+    Page<RegionDto> searchRegionByCountryId(@Param("countryId") Long countryId, Pageable pageable);
 }

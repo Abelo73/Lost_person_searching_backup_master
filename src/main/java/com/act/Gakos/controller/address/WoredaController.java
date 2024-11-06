@@ -87,4 +87,11 @@ public class WoredaController {
         Page<WoredaDto> woredasDto = woredaService.searchWoredas(searchTerm, pageable);
         return new ResponseEntity<>(woredasDto, HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public Page<WoredaDto> searchWoredaByZoneId(
+            @RequestParam(value = "zone", required = false) Integer zone,
+            Pageable pageable) {
+        return woredaService.searchWoredaByZoneId(zone, pageable);
+    }
 }

@@ -59,7 +59,16 @@ public interface KebeleRepository extends JpaRepository<Kebele, Integer> {
             "LEFT JOIN w.zone z " +
             "LEFT JOIN z.region r " +
             "LEFT JOIN r.country c " +
-            "WHERE (:woredaId IS NULL OR w.id = :woredaId)")
-    Page<KebeleDto> searchKebeleByCriteria(@Param("woredaId") Long woredaId, Pageable pageable);
+            "WHERE (:woredaId IS NULL OR w.id = :woredaId)" +
+            "AND (:zoneId IS NULL OR z.id = :zoneId)" +
+            "AND (:regionId IS NULL OR r.id = :regionId)" +
+            "AND (:countryId IS NULL OR c.id = :countryId)"
+    )
+    Page<KebeleDto> searchKebeleByCriteria(
+            @Param("woredaId") Long woredaId,
+            @Param("zoneId") Long zoneId,
+            @Param("regionId") Long regionId,
+            @Param("countryId") Long countryId,
+            Pageable pageable);
 
 }

@@ -116,8 +116,8 @@ public class KebeleService {
     }
 
 
-    public Page<KebeleDto> searchKebeleByCriteria(Long woredaId, Pageable pageable) {
-        return kebeleRepository.searchKebeleByCriteria(woredaId, pageable);
+    public Page<KebeleDto> searchKebeleByCriteria(Long woredaId, Long zoneId, Long regionId, Long countryId, Pageable pageable) {
+        return kebeleRepository.searchKebeleByCriteria(woredaId, zoneId, regionId, countryId, pageable);
     }
 
 

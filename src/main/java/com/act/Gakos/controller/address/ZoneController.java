@@ -6,6 +6,7 @@ import com.act.Gakos.entity.address.Zone;
 import com.act.Gakos.service.address.ZoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +79,12 @@ public class ZoneController {
         }
 
         return new ResponseEntity<>(results, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/search")
+    public Page<ZoneDto> searchZoneByRegionId(
+            @RequestParam(value = "region", required = false) Long region,
+            Pageable pageable) {
+        return zoneService.searchZoneByRegionId(region, pageable);
     }
 }
