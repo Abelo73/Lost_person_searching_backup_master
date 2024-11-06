@@ -103,7 +103,7 @@ public class GotController {
         return gotService.searchKebeleByCriteria(got, pageable);
     }
 
-    @PostMapping
+    @PostMapping("/search")
     public ResponseEntity<Got> createGot(@RequestBody Got got) {
         Got createdGot = gotService.createGot(got);
         return new ResponseEntity<>(createdGot, HttpStatus.CREATED);
