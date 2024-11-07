@@ -128,7 +128,16 @@ public class KebeleController {
         Pageable pageable = PageRequest.of(page, size);
         return kebeleService.searchKebeleByCriteria(woreda, zone,region, country, pageable);
     }
+    @PostMapping("/search/new")
+    public ResponseEntity<?> saveKebele(@RequestBody Kebele kebele) {
+        Kebele savedKebele = kebeleService.addKebele(kebele);
 
+        if (savedKebele == null) {
+            logger.info("Kebele with name '{}' already exists.", kebele.getName());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Kebele with this name already exists.");
+        }
+        return ResponseEntity.ok(savedKebele);
+    }
 
     // Endpoint for searching Kebeles by Woreda name
     @GetMapping("/search/kebeleByWoredaName")

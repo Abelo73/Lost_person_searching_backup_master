@@ -101,5 +101,11 @@ public class RegionController {
         return regionService.searchRegionByCountryId(country, pageable);
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<Region> saveRegion(@RequestBody Region region) {
+        Region createdRegion = regionService.addRegion(region);
+        return new ResponseEntity<>(createdRegion, HttpStatus.CREATED);
+    }
+
 
 }

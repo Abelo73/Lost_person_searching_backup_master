@@ -87,4 +87,14 @@ public class ZoneController {
             Pageable pageable) {
         return zoneService.searchZoneByRegionId(region, pageable);
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<Zone> saveZone(@RequestBody Zone zone) {
+        if (zoneService.existsByNameAndRegionId(zone.getName(), zone.getRegion().getId())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT); // 409 Conflict for duplicates
+        }
+        Zone createdZone = zoneService.addZone(zone);
+        return new ResponseEntity<>(createdZone, HttpStatus.CREATED);
+    }
+
 }

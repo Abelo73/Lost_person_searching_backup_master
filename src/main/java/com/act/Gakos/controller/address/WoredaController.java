@@ -88,6 +88,17 @@ public class WoredaController {
         return new ResponseEntity<>(woredasDto, HttpStatus.OK);
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<?> saveWoreda(@RequestBody Woreda woreda){
+        Woreda savedWoreda = woredaService.addWoreda(woreda);
+
+        if (savedWoreda == null){
+            logger.info("Woreda with name '{}' is already exists.", woreda.getName());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Woreda with this name already exists.");
+        }
+        return ResponseEntity.ok(savedWoreda);
+    }
+
     @GetMapping("/search")
     public Page<WoredaDto> searchWoredaByZoneId(
             @RequestParam(value = "zone", required = false) Integer zone,
