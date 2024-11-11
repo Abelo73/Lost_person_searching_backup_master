@@ -2,7 +2,9 @@ package com.act.Gakos.service;
 
 import com.act.Gakos.dto.address.RegionDto;
 import com.act.Gakos.entity.address.Region;
+import com.act.Gakos.exceptions.ResourceNotFoundException;
 import com.act.Gakos.repository.address.RegionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -96,5 +98,33 @@ public class RegionService {
 
     public Page<RegionDto> searchRegionByCountryId(Long countryId, Pageable pageable) {
         return regionRepository.searchRegionByCountryId(countryId, pageable);
+    }
+
+    // Update region method
+    @Transactional
+    public RegionDto updateRegion(Integer id, RegionDto regionDto) {
+        // Find existing region by ID
+        Region existingRegion = regionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Region not found with id " + id));
+
+        // Update fields
+        existingRegion.setName(regionDto.getName());
+        existingRegion.setDescription(regionDto.getDescription());
+//        existingRegion.setCountry(regionDto.getCountry());  // Assuming `Country` is a related entity
+
+        // Save the updated region
+        Region savedRegion = regionRepository.save(existingRegion);
+
+        // Convert to DTO and return
+        return convertToDto(savedRegion);
+    }
+
+    // Delete region method
+    @Transactional
+    public void deleteRegion(Integer id) {
+        if (!regionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Region not found with id " + id);
+        }
+        regionRepository.deleteById(id);
     }
 }

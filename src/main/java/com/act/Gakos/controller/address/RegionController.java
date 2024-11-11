@@ -97,7 +97,13 @@ public class RegionController {
     @GetMapping("/search")
     public Page<RegionDto> searchRegionByCountryId(
             @RequestParam(value = "country", required = false) Long country,
-            Pageable pageable) {
+            @RequestParam(value = "sort", defaultValue = "name", required = false) String sort,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Sort sorting = Sort.by(Sort.Direction.fromString(direction), sort);
+        Pageable pageable = PageRequest.of(page, size, sorting);
         return regionService.searchRegionByCountryId(country, pageable);
     }
 
@@ -108,4 +114,17 @@ public class RegionController {
     }
 
 
+    @PutMapping("search/{id}")
+    public ResponseEntity<RegionDto> updateRegion(
+            @PathVariable Integer id,
+            @RequestBody RegionDto regionDto) {
+        RegionDto updatedRegion = regionService.updateRegion(id, regionDto);
+        return ResponseEntity.ok(updatedRegion);
+    }
+
+    @DeleteMapping("search/{id}")
+    public ResponseEntity<Void> deleteRegion(@PathVariable Integer id) {
+        regionService.deleteRegion(id);
+        return ResponseEntity.noContent().build();
+    }
 }
