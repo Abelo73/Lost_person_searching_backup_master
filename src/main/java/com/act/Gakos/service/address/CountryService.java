@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CountryService {
 
@@ -36,5 +38,31 @@ public class CountryService {
 
         logger.info("Saving new country: {}", country);
         return countryRepository.save(country); // Save new country if it does not exist
+    }
+
+
+
+    public Optional<Country> getCountryById(Integer id) {
+        logger.info("Fetching country by ID: {}", id);
+        return countryRepository.findById(id);
+    }
+
+    public Optional<Country> updateCountry(Integer id, Country countryDetails) {
+        return countryRepository.findById(id).map(country -> {
+            country.setCountryName(countryDetails.getCountryName());
+            country.setDescriptions(countryDetails.getDescriptions());
+            logger.info("Updating country with ID '{}'", id);
+            return countryRepository.save(country);
+        });
+    }
+
+    public boolean deleteCountry(Integer id) {
+        if (countryRepository.existsById(id)) {
+            logger.info("Deleting country with ID: {}", id);
+            countryRepository.deleteById(id);
+            return true;
+        }
+        logger.warn("Country with ID '{}' not found for deletion", id);
+        return false;
     }
 }
