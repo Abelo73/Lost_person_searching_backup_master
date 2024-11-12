@@ -118,21 +118,6 @@ public class RegionController {
         return new ResponseEntity<>(createdRegion, HttpStatus.CREATED);
     }
 
-//    @PutMapping("/search/{id}")
-//    public ResponseEntity<Region> updateRegion(@PathVariable Integer id, @RequestBody RegionDto regionDto) {
-//        log.info("Received request to update region with id {}", id);
-//        try {
-//            Region updatedRegion = regionService.updateRegion(id, regionDto);
-//            return new ResponseEntity<>(updatedRegion, HttpStatus.OK);
-//        } catch (ResourceNotFoundException e) {
-//            log.error("Error updating region with id {}: {}", id, e.getMessage());
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        } catch (IllegalArgumentException e) {
-//            log.error("Invalid update data for region with id {}: {}", id, e.getMessage());
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
     @PutMapping("/search/{id}")
     public ResponseEntity<Region> updateRegion(@PathVariable Integer id, @RequestBody RegionDto regionDto) {
         log.info("Received request to update region with id {}", id);

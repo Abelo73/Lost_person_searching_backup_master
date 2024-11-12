@@ -4,6 +4,8 @@ import com.act.Gakos.dto.address.RegionDto;
 import com.act.Gakos.dto.address.ZoneDto;
 import com.act.Gakos.entity.address.Zone;
 import com.act.Gakos.service.address.ZoneService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ public class ZoneController {
 
     @Autowired
     private ZoneService zoneService;
+    private static final Logger logger = LoggerFactory.getLogger(ZoneController.class);
 
 
     @GetMapping("/all")
@@ -95,6 +98,45 @@ public class ZoneController {
         }
         Zone createdZone = zoneService.addZone(zone);
         return new ResponseEntity<>(createdZone, HttpStatus.CREATED);
+    }
+
+    // Endpoint to get zone by ID
+    @GetMapping("/search/{id}")
+    public ResponseEntity<ZoneDto> getZoneById(@PathVariable Long id) {
+        logger.info("Fetching zone with ID: {}", id);
+        ZoneDto zoneDto = zoneService.getZoneById(id);
+        if (zoneDto != null) {
+            return new ResponseEntity<>(zoneDto, HttpStatus.OK);
+        } else {
+            logger.warn("Zone with ID: {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Endpoint to update a zone
+    @PutMapping("/search/{id}")
+    public ResponseEntity<Zone> updateZone(@PathVariable Long id, @RequestBody Zone zone) {
+        logger.info("Updating zone with ID: {}", id);
+        Zone updatedZone = zoneService.updateZone(id, zone);
+        if (updatedZone != null) {
+            return new ResponseEntity<>(updatedZone, HttpStatus.OK);
+        } else {
+            logger.warn("Zone with ID: {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Endpoint to delete a zone
+    @DeleteMapping("/search/{id}")
+    public ResponseEntity<Void> deleteZone(@PathVariable Long id) {
+        logger.info("Deleting zone with ID: {}", id);
+        boolean isDeleted = zoneService.deleteZone(id);
+        if (isDeleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            logger.warn("Zone with ID: {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

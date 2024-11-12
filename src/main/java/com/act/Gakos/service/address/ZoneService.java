@@ -3,11 +3,14 @@ package com.act.Gakos.service.address;
 import com.act.Gakos.dto.address.ZoneDto;
 import com.act.Gakos.entity.address.Zone;
 import com.act.Gakos.repository.address.ZoneRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,6 +18,8 @@ public class ZoneService {
 
     @Autowired
     private ZoneRepository zoneRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ZoneService.class);
+
 
     public Zone addZone(Zone zone) {
         return zoneRepository.save(zone);
@@ -68,14 +73,14 @@ public class ZoneService {
     }
 
     // Method to convert Zone entity to ZoneDto
-    private ZoneDto convertToDto(Zone zone) {
-        return new ZoneDto(
-                zone.getId(),
-                zone.getName(),
-                zone.getDescription(),
-                zone.getRegionName()
-        );
-    }
+//    private ZoneDto convertToDto(Zone zone) {
+//        return new ZoneDto(
+//                zone.getId(),
+//                zone.getName(),
+//                zone.getDescription(),
+//                zone.getRegionName()
+//        );
+//    }
 
 
     public Page<ZoneDto> searchZoneByRegionId(Long regionId, Pageable pageable) {
@@ -83,4 +88,45 @@ public class ZoneService {
     }
 
 
+    public ZoneDto getZoneById(Long id) {
+        logger.info("Retrieving zone by ID: {}", id);
+        Optional<Zone> zoneOpt = zoneRepository.findById(id);
+        if (zoneOpt.isPresent()) {
+            return convertToDto(zoneOpt.get());
+        }
+        return null;
+    }
+
+    public Zone updateZone(Long id, Zone updatedZoneData) {
+        logger.info("Updating zone with ID: {}", id);
+        return zoneRepository.findById(id).map(zone -> {
+            zone.setName(updatedZoneData.getName());
+            zone.setDescription(updatedZoneData.getDescription());
+            zone.setRegion(updatedZoneData.getRegion());
+            Zone savedZone = zoneRepository.save(zone);
+            logger.info("Zone updated successfully: {}", savedZone);
+            return savedZone;
+        }).orElse(null);
+    }
+
+    public boolean deleteZone(Long id) {
+        logger.info("Attempting to delete zone with ID: {}", id);
+        if (zoneRepository.existsById(id)) {
+            zoneRepository.deleteById(id);
+            logger.info("Zone deleted successfully with ID: {}", id);
+            return true;
+        } else {
+            logger.warn("Zone with ID: {} not found", id);
+            return false;
+        }
+    }
+
+    // Convert Zone entity to ZoneDto (if not already present)
+    private ZoneDto convertToDto(Zone zone) {
+        return new ZoneDto(
+                zone.getId(),
+                zone.getName(),
+                zone.getDescription(),
+                zone.getRegionName());
+    }
 }
