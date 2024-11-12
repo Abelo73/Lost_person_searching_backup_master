@@ -2,6 +2,7 @@ package com.act.Gakos.entity.address;
 
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "country")
 @Table
@@ -14,6 +15,10 @@ public class Country {
 
     private String countryName;
     private String descriptions;
+
+    public Country() {
+
+    }
 
     public Integer getId() {
         return id;
@@ -39,6 +44,12 @@ public class Country {
         this.descriptions = descriptions;
     }
 
+    public Country(Integer id, String countryName, String descriptions) {
+        this.id = id;
+        this.countryName = countryName;
+        this.descriptions = descriptions;
+    }
+
     @Override
     public String toString() {
         return "Country{" +
@@ -47,4 +58,6 @@ public class Country {
                 ", descriptions='" + descriptions + '\'' +
                 '}';
     }
+
+
 }

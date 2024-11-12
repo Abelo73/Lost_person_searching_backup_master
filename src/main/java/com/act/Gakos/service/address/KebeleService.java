@@ -120,10 +120,23 @@ public class KebeleService {
         return kebeleRepository.searchKebeleByCriteria(woredaId, zoneId, regionId, countryId, pageable);
     }
 
+    // Update Kebele
+    public Kebele updateKebele(Integer id, Kebele kebele) {
+        return kebeleRepository.findById(id).map(existingKebele -> {
+            existingKebele.setName(kebele.getName());
+            existingKebele.setWoreda(kebele.getWoreda());
+            return kebeleRepository.save(existingKebele);
+        }).orElse(null);
+    }
+
+    // Delete Kebele
+    public boolean deleteKebele(Integer id) {
+        if (kebeleRepository.existsById(id)) {
+            kebeleRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 
 
-
-//    private KebeleDto convertToDto(Kebele kebele) {
-//        return new KebeleDto(kebele.getId().intValue(), kebele.getName(), kebele.getWoredaName());
-//    }
 }

@@ -45,7 +45,7 @@ public class Region {
         return country;
     }
 
-    public void setCountry(Country country) {
+    public void setCountry(Integer countryId) {
         this.country = country;
     }
 }

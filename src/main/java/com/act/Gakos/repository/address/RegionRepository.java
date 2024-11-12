@@ -24,7 +24,7 @@ public interface RegionRepository extends JpaRepository<Region, Integer> {
 
     List<Region> findByCountryId(Integer countryId);
 
-    @Query("SELECT new com.act.Gakos.dto.address.RegionDto(r.id, r.name, r.description) " +
+    @Query("SELECT new com.act.Gakos.dto.address.RegionDto(r.id, r.name, r.description, r.country.id) " +
             "FROM region r " +
             "WHERE (:countryId IS NULL OR r.country.id = :countryId)")
     Page<RegionDto> searchRegionByCountryId(@Param("countryId") Long countryId, Pageable pageable);

@@ -1,20 +1,23 @@
 package com.act.Gakos.dto.address;
 
+import com.act.Gakos.entity.address.Country;
+
 public class RegionDto {
     private Long id;
 
     private String name;
     private String description;
+    private Integer countryId;
 
     public RegionDto() {
     }
 
-    public RegionDto(Long id, String name, String description) {
+    public RegionDto(Long id, String name, String description, Integer countryId) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.countryId = countryId;
     }
-
     public Long getId() {
         return id;
     }
@@ -37,6 +40,14 @@ public class RegionDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Integer countryId) {
+        this.countryId = countryId;
     }
 
     @Override

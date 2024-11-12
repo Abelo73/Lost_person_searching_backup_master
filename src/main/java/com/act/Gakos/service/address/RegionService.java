@@ -1,10 +1,14 @@
-package com.act.Gakos.service;
+package com.act.Gakos.service.address;
 
 import com.act.Gakos.dto.address.RegionDto;
+import com.act.Gakos.entity.address.Country;
 import com.act.Gakos.entity.address.Region;
 import com.act.Gakos.exceptions.ResourceNotFoundException;
+import com.act.Gakos.repository.address.CountryRepository;
 import com.act.Gakos.repository.address.RegionRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -16,22 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class RegionService {
 
+    private final static Logger log = LoggerFactory.getLogger(RegionService.class); // Use RegionService class for logging
+
     @Autowired
     private RegionRepository regionRepository;
 
-    // Add a new region
+    @Autowired
+    private CountryRepository countryRepository;
 
-
-    // Get paginated list of regions with optional search by name or description
-//    public Page<Region> getRegions(String searchTerm, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        if (searchTerm != null && !searchTerm.isEmpty()) {
-//            return regionRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchTerm, searchTerm, pageable);
-//        } else {
-//            return regionRepository.findAll(pageable);
-//        }
-//    }
 
 
     public Page<RegionDto> getRegionsReg(String searchTerm, int page, int size, Sort name) {
@@ -55,11 +51,25 @@ public class RegionService {
     }
 
     private RegionDto convertToDto(Region region) {
+        Integer countryId = (region.getCountry() != null) ? region.getCountry().getId() : null;
+
         return new RegionDto(
                 region.getId(),
                 region.getName(),
-                region.getDescription());
+                region.getDescription(),
+                countryId  // Use null if country is not set
+        );
     }
+
+
+//    private RegionDto convertToDto(Region region) {
+//        return new RegionDto(
+//                region.getId(),
+//                region.getName(),
+//                region.getDescription(),
+//                region.getCountry().getId()
+//        );
+//    }
 
 
 
@@ -101,23 +111,47 @@ public class RegionService {
     }
 
     // Update region method
+// Update region method
     @Transactional
     public RegionDto updateRegion(Integer id, RegionDto regionDto) {
+        log.info("Attempting to update region with ID: {}", id);
+
         // Find existing region by ID
         Region existingRegion = regionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Region not found with id " + id));
+                .orElseThrow(() -> {
+                    log.error("Region with ID {} not found", id);
+                    return new ResourceNotFoundException("Region not found with id " + id);
+                });
+
+        log.info("Found existing region: {}", existingRegion);
 
         // Update fields
         existingRegion.setName(regionDto.getName());
         existingRegion.setDescription(regionDto.getDescription());
-//        existingRegion.setCountry(regionDto.getCountry());  // Assuming `Country` is a related entity
+        log.debug("Updated region name to: {}, description to: {}", regionDto.getName(), regionDto.getDescription());
+
+        // Fetch the country using countryId from RegionDto
+        Country country = countryRepository.findById(regionDto.getCountryId())
+                .orElseThrow(() -> {
+                    log.error("Country with ID {} not found", regionDto.getCountryId());
+                    return new ResourceNotFoundException("Country not found with id: " + regionDto.getCountryId());
+                });
+
+        log.info("Found country with ID: {}", country.getId());
+
+        // Set the Country object to the Region
+        existingRegion.setCountry(country.getId());
+        log.info("saving country id to :{}", country.getId());
 
         // Save the updated region
         Region savedRegion = regionRepository.save(existingRegion);
+        log.info("Region updated successfully: {}", savedRegion);
 
         // Convert to DTO and return
         return convertToDto(savedRegion);
     }
+
+
 
     // Delete region method
     @Transactional

@@ -3,7 +3,9 @@ package com.act.Gakos.controller.address;
 import com.act.Gakos.dto.address.RegionDto;
 import com.act.Gakos.entity.address.Region;
 import com.act.Gakos.repository.address.RegionRepository;
-import com.act.Gakos.service.RegionService;
+import com.act.Gakos.service.address.RegionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ public class RegionController {
 
     @Autowired
     private RegionRepository regionRepository;
+
+    private final static Logger log = LoggerFactory.getLogger(RegionController.class);
 
     // Endpoint to add a new region
     @PostMapping
@@ -114,12 +118,46 @@ public class RegionController {
     }
 
 
+//    @PutMapping("search/{id}")
+//    public ResponseEntity<RegionDto> updateRegion(
+//            @PathVariable Integer id,
+//            @RequestBody RegionDto regionDto) {
+//        RegionDto updatedRegion = regionService.updateRegion(id, regionDto);
+//        return ResponseEntity.ok(updatedRegion);
+//    }
+
     @PutMapping("search/{id}")
     public ResponseEntity<RegionDto> updateRegion(
             @PathVariable Integer id,
             @RequestBody RegionDto regionDto) {
-        RegionDto updatedRegion = regionService.updateRegion(id, regionDto);
-        return ResponseEntity.ok(updatedRegion);
+
+        log.info("checking for id:{} ", id);
+
+        // Check if the ID is valid (null or zero should be invalid in most cases)
+        if (id == null || id <= 0) {
+            log.info("Id is not null or greater than zero");
+            return ResponseEntity.badRequest().body(null);  // Or provide a meaningful error message
+        }
+
+        try {
+            RegionDto updatedRegion = regionService.updateRegion(id, regionDto);
+            log.info("Updating region data: {}", updatedRegion);
+            if (updatedRegion == null) {
+                log.info("Updating region data is null");
+                return ResponseEntity.notFound().build();  // If region is not found
+            }
+            log.info("Updated successfully: {}", updatedRegion);
+            return ResponseEntity.ok(updatedRegion);  // Return the updated region
+        } catch (IllegalArgumentException e) {
+            // This catches cases where, for example, the region is not found
+            log.info("Region is not found");
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            // For other unexpected exceptions
+            log.info("Other error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);  // Or provide a message indicating failure
+        }
     }
 
     @DeleteMapping("search/{id}")

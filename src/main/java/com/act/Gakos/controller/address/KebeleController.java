@@ -91,30 +91,6 @@ public class KebeleController {
     }
 
 
-//    @GetMapping("/search/new")  // Endpoint for searching kebeles
-//    public ResponseEntity<Page<KebeleDto>> searchKebele(
-//            @RequestParam(required = false) Long zoneId,
-//            @RequestParam(required = false) Long woredaId,
-//            @RequestParam(required = false) Long regionId,
-//            @RequestParam(required = false) Long countryId,
-//            Pageable pageable) {
-//
-//        Page<KebeleDto> kebeles = kebeleService.searchKebeleByCriteria(zoneId, woredaId, regionId, countryId, pageable);
-//        return ResponseEntity.ok(kebeles);
-//    }
-
-//    @GetMapping("/search/new")
-//    public ResponseEntity<Page<KebeleSearchDto>> searchKebele(
-//            @RequestParam(required = false) Long zoneId,
-//            @RequestParam(required = false) Long woredaId,
-//            @RequestParam(required = false) Long regionId,
-//            @RequestParam(required = false) Long countryId,
-//            @RequestParam(defaultValue = "10") int limit, // Default limit if not provided
-//            Pageable pageable) {
-//
-//        Page<KebeleSearchDto> results = kebeleService.searchKebeleByCriteria(zoneId, woredaId, regionId, countryId, pageable);
-//        return ResponseEntity.ok(results);
-//    }
 
     @GetMapping("/search/new")
     public Page<KebeleDto> searchKebele(
@@ -149,11 +125,39 @@ public class KebeleController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<Kebele> kebeles = kebeleService.searchKebeleByWoredaName(searchTerm, pageable);
 
-        // Convert the Page<Kebele> to Page<KebeleDto> if necessary, assuming you have a conversion method
         Page<KebeleDto> kebeleDtos = kebeles.map(this::convertToDto); // Create this conversion method
 
         return new ResponseEntity<>(kebeleDtos, HttpStatus.OK);
     }
+
+    // Update Kebele by ID
+    @PutMapping("/search/new/{id}")
+    public ResponseEntity<?> updateKebele(@PathVariable Integer id, @RequestBody Kebele kebele) {
+        Kebele updatedKebele = kebeleService.updateKebele(id, kebele);
+
+        if (updatedKebele == null) {
+            logger.info("Kebele with ID {} not found for update.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Kebele not found.");
+        }
+
+        logger.info("Successfully updated Kebele with ID {}.", id);
+        return ResponseEntity.ok(updatedKebele);
+    }
+
+    // Delete Kebele by ID
+    @DeleteMapping("/search/new/{id}")
+    public ResponseEntity<?> deleteKebele(@PathVariable Integer id) {
+        boolean isDeleted = kebeleService.deleteKebele(id);
+
+        if (!isDeleted) {
+            logger.info("Kebele with ID {} not found for deletion.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Kebele not found.");
+        }
+
+        logger.info("Successfully deleted Kebele with ID {}.", id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 
     private KebeleDto convertToDto(Kebele kebele) {
         return new KebeleDto(
@@ -165,8 +169,6 @@ public class KebeleController {
                 kebele.getWoreda().getZone().getRegion().getCountry().getCountryName()
         );
     }
-
-
 
 
 }
