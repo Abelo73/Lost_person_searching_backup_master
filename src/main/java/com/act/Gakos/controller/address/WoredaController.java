@@ -99,10 +99,55 @@ public class WoredaController {
         return ResponseEntity.ok(savedWoreda);
     }
 
+    @PutMapping("/search/{id}")
+    public ResponseEntity<?> updateWoreda(
+            @PathVariable Integer id,
+            @RequestBody WoredaDto woredaDto) {
+
+        Woreda updatedWoreda = woredaService.updateWoreda(id, woredaDto);
+        if (updatedWoreda == null) {
+            logger.info("Woreda with id '{}' not found.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Woreda not found.");
+        }
+
+        logger.info("Updated Woreda with id '{}'", id);
+        return ResponseEntity.ok(updatedWoreda);
+    }
+
+
     @GetMapping("/search")
     public Page<WoredaDto> searchWoredaByZoneId(
             @RequestParam(value = "zone", required = false) Integer zone,
             Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.asc("name")));
+
         return woredaService.searchWoredaByZoneId(zone, pageable);
     }
+
+    @DeleteMapping("/search/{id}")
+    public ResponseEntity<?> deleteWoreda(@PathVariable Integer id) {
+        boolean isDeleted = woredaService.deleteWoreda(id);
+
+        if (!isDeleted) {
+            logger.info("Woreda with id '{}' not found for deletion.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Woreda not found.");
+        }
+
+        logger.info("Deleted Woreda with id '{}'", id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/search/{id}")
+    public ResponseEntity<?> findWoredaById(@PathVariable Integer id) {
+        WoredaDto woredaDto = woredaService.findWoredaById(id);
+
+        if (woredaDto == null) {
+            logger.info("Woreda with id '{}' not found.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Woreda not found.");
+        }
+
+        logger.info("Fetched Woreda with id '{}'", id);
+        return ResponseEntity.ok(woredaDto);
+    }
+
 }

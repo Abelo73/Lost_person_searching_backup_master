@@ -1,15 +1,17 @@
 package com.act.Gakos.service.address;
 
 import com.act.Gakos.dto.address.WoredaDto;
-import com.act.Gakos.dto.address.ZoneDto;
 import com.act.Gakos.entity.address.Woreda;
 import com.act.Gakos.entity.address.Zone;
 import com.act.Gakos.repository.address.WoredaRepository;
+import com.act.Gakos.repository.address.ZoneRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,9 @@ public class WoredaService {
 
     @Autowired
     private WoredaRepository woredaRepository;
+
+    @Autowired
+    private ZoneRepository zoneRepository;
 
 
 
@@ -78,8 +83,8 @@ public class WoredaService {
                 woreda.getId(),
                 woreda.getName(),
                 woreda.getDescription(),
+                woreda.getZone().getId(),
                 woreda.getZoneName()
-
         ));
 
         logger.info("Returning paginated result of Woredas - Page number: {}, Page size: {}",
@@ -102,17 +107,78 @@ public class WoredaService {
     }
 
     // Manual conversion from Woreda to WoredaDto
-    private WoredaDto convertToDto(Woreda woreda) {
+    public WoredaDto convertToDto(Woreda woreda) {
         WoredaDto dto = new WoredaDto();
         dto.setId(woreda.getId());
         dto.setName(woreda.getName());
-        dto.getDescription();
-        // Set other fields as necessary
+        dto.setDescription(woreda.getDescription());
+
+        if (woreda.getZone() != null) {
+            dto.setZoneId(woreda.getZone().getId()); // Set zoneId
+            dto.setZoneName(woreda.getZone().getName()); // Set zoneName
+        }
+        logger.info("====== {}", dto.setZoneName(woreda.getZone().getName()));
         return dto;
     }
+
 
 
     public Page<WoredaDto> searchWoredaByZoneId(Integer zoneId, Pageable pageable) {
         return woredaRepository.searchWoredaByZoneId(zoneId, pageable);
     }
+
+    public Woreda updateWoreda(Integer id, WoredaDto updatedWoredaDto) {
+        logger.info("Updating Woreda with ID: {}", id);
+
+        // Fetch the existing Woreda entity by ID
+        return woredaRepository.findById(id).map(woreda -> {
+            // Get the zoneId from the DTO
+            Long zoneId = updatedWoredaDto.getZoneId(); // This should be the zoneId in your DTO
+
+            // Check if zone exists by zoneId
+            Zone zone = zoneRepository.findById(zoneId.longValue())  // Use zoneId to find the Zone
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Zone not found"));
+
+            // Set the updated values in the Woreda entity
+            woreda.setName(updatedWoredaDto.getName());
+            woreda.setDescription(updatedWoredaDto.getDescription());
+            woreda.setZone(zone);  // Update the zone based on the new zoneId
+
+            // Save the updated Woreda
+            Woreda savedWoreda = woredaRepository.save(woreda);
+            logger.info("Woreda updated successfully: {}", savedWoreda);
+            return savedWoreda;
+        }).orElseThrow(() -> {
+            logger.error("Woreda with ID {} not found", id);
+            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Woreda not found");
+        });
+    }
+
+
+
+
+    public boolean deleteWoreda(Integer id) {
+        if (!woredaRepository.existsById(id)) {
+            logger.info("Woreda with id '{}' does not exist.", id);
+            return false;
+        }
+
+        woredaRepository.deleteById(id);
+        logger.info("Deleted Woreda with id '{}'", id);
+        return true;
+    }
+
+    public WoredaDto findWoredaById(Integer id) {
+        Woreda woreda = woredaRepository.findById(id).orElse(null);
+
+        if (woreda == null) {
+            logger.info("Woreda with id '{}' not found.", id);
+            return null;
+        }
+
+        WoredaDto woredaDto = convertToDto(woreda);
+        logger.info("Fetched Woreda: {}", woredaDto);
+        return woredaDto;
+    }
+
 }

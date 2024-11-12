@@ -34,7 +34,6 @@ public class CountryController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-//        Pageable pageable = PageRequest.of(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("countryName").ascending());
 

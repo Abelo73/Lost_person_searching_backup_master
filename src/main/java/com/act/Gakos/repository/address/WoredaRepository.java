@@ -21,9 +21,10 @@ public interface WoredaRepository extends JpaRepository<Woreda, Integer> {
     Page<Woreda> findByZoneId(Integer zoneId, Pageable pageable);
 
 
-    @Query("SELECT new com.act.Gakos.dto.address.WoredaDto(w.id, w.name, w.description, z.name) " +
+    @Query("SELECT new com.act.Gakos.dto.address.WoredaDto(w.id, w.name, w.description, w.zone.id, w.zoneName) " +
             "FROM woreda w " +
             "LEFT JOIN w.zone z " +
             "WHERE (:zoneId IS NULL OR z.id = :zoneId)")
     Page<WoredaDto> searchWoredaByZoneId(@Param("zoneId") Integer zoneId, Pageable pageable);
+
 }

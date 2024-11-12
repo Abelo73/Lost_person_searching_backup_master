@@ -5,11 +5,12 @@ public class WoredaDto {
     private String name;
     private String description;
     private String zoneName;
-
-    public WoredaDto(Integer id, String name, String description, String zoneName) {
+private Long zoneId;
+    public WoredaDto(Integer id, String name, String description, Long zoneId, String  zoneName) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.zoneId = zoneId;
         this.zoneName = zoneName;
     }
 
@@ -42,12 +43,18 @@ public class WoredaDto {
         this.description = description;
     }
 
+
     public String getZoneName() {
         return zoneName;
     }
 
-    public void setZoneName(String zoneName) {
+    public Object setZoneName(String zoneName) {
         this.zoneName = zoneName;
+        return null;
+    }
+
+    public void setZoneId(Long zoneId) {
+        this.zoneId = zoneId;
     }
 
     @Override
@@ -56,7 +63,14 @@ public class WoredaDto {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", zoneId='" + zoneId + '\'' +
                 ", zoneName='" + zoneName + '\'' +
+
                 '}';
+    }
+
+
+    public Long getZoneId() {
+        return zoneId;
     }
 }
