@@ -14,6 +14,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -62,15 +63,6 @@ public class RegionService {
     }
 
 
-//    private RegionDto convertToDto(Region region) {
-//        return new RegionDto(
-//                region.getId(),
-//                region.getName(),
-//                region.getDescription(),
-//                region.getCountry().getId()
-//        );
-//    }
-
 
 
 
@@ -110,45 +102,86 @@ public class RegionService {
         return regionRepository.searchRegionByCountryId(countryId, pageable);
     }
 
-    // Update region method
-// Update region method
-    @Transactional
-    public RegionDto updateRegion(Integer id, RegionDto regionDto) {
-        log.info("Attempting to update region with ID: {}", id);
+//    public Region updateRegion(Integer id, RegionDto updatedRegionDto) {
+//        // Fetch the existing region
+//        Region existingRegion = regionRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Region not found with id " + id));
+//
+//        boolean isUpdated = false;
+//
+//        // Check and update the name if different and not null
+//        if (updatedRegionDto.getName() != null && !Objects.equals(existingRegion.getName(), updatedRegionDto.getName())) {
+//            log.info("Updating region name from '{}' to '{}'", existingRegion.getName(), updatedRegionDto.getName());
+//            existingRegion.setName(updatedRegionDto.getName());
+//            isUpdated = true;
+//        }
+//
+//        // Check and update the description if different and not null
+//        if (updatedRegionDto.getDescription() != null && !Objects.equals(existingRegion.getDescription(), updatedRegionDto.getDescription())) {
+//            log.info("Updating region description from '{}' to '{}'", existingRegion.getDescription(), updatedRegionDto.getDescription());
+//            existingRegion.setDescription(updatedRegionDto.getDescription());
+//            isUpdated = true;
+//        }
+//
+//        // Check and update the country if different and not null
+//        if (updatedRegionDto.getCountryId() != null && (existingRegion.getCountry() == null || !Objects.equals(existingRegion.getCountry().getId(), updatedRegionDto.getCountryId()))) {
+//            Country newCountry = countryRepository.findById(updatedRegionDto.getCountryId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Country not found with id " + updatedRegionDto.getCountryId()));
+//            log.info("Updating region country from '{}' to '{}'", existingRegion.getCountry().getId(), updatedRegionDto.getCountryId());
+//            existingRegion.setCountry(newCountry.getId());
+//            isUpdated = true;
+//        }
+//
+//        // Save only if an update occurred
+//        if (isUpdated) {
+//            log.info("Saving updated region with id {} and data {}", id, existingRegion);
+//            return regionRepository.save(existingRegion);
+//        } else {
+//            log.info("No changes detected for region with id {}, update skipped.", id);
+//            return existingRegion;
+//        }
+//
+//    }
 
-        // Find existing region by ID
+    public Region updateRegion(Integer id, RegionDto updatedRegionDto) {
+        // Fetch the existing region
         Region existingRegion = regionRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Region with ID {} not found", id);
-                    return new ResourceNotFoundException("Region not found with id " + id);
-                });
+                .orElseThrow(() -> new ResourceNotFoundException("Region not found with id " + id));
 
-        log.info("Found existing region: {}", existingRegion);
+        boolean isUpdated = false;
 
-        // Update fields
-        existingRegion.setName(regionDto.getName());
-        existingRegion.setDescription(regionDto.getDescription());
-        log.debug("Updated region name to: {}, description to: {}", regionDto.getName(), regionDto.getDescription());
+        // Check and update name
+        if (updatedRegionDto.getName() != null && !Objects.equals(existingRegion.getName(), updatedRegionDto.getName())) {
+            log.info("Updating region name from '{}' to '{}'", existingRegion.getName(), updatedRegionDto.getName());
+            existingRegion.setName(updatedRegionDto.getName());
+            isUpdated = true;
+        }
 
-        // Fetch the country using countryId from RegionDto
-        Country country = countryRepository.findById(regionDto.getCountryId())
-                .orElseThrow(() -> {
-                    log.error("Country with ID {} not found", regionDto.getCountryId());
-                    return new ResourceNotFoundException("Country not found with id: " + regionDto.getCountryId());
-                });
+        // Check and update description
+        if (updatedRegionDto.getDescription() != null && !Objects.equals(existingRegion.getDescription(), updatedRegionDto.getDescription())) {
+            log.info("Updating region description from '{}' to '{}'", existingRegion.getDescription(), updatedRegionDto.getDescription());
+            existingRegion.setDescription(updatedRegionDto.getDescription());
+            isUpdated = true;
+        }
 
-        log.info("Found country with ID: {}", country.getId());
+        // Check and update country
+        if (updatedRegionDto.getCountryId() != null && (existingRegion.getCountry() == null || !Objects.equals(existingRegion.getCountry().getId(), updatedRegionDto.getCountryId()))) {
+            Country newCountry = countryRepository.findById(updatedRegionDto.getCountryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Country not found with id " + updatedRegionDto.getCountryId()));
+            log.info("Updating region country from '{}' to '{}'", existingRegion.getCountry() != null ? existingRegion.getCountry().getId() : null, updatedRegionDto.getCountryId());
+            existingRegion.setCountry(newCountry);
+            log.info("New Country: {}", newCountry);  // Log the new country to ensure it's correct
+            isUpdated = true;
+        }
 
-        // Set the Country object to the Region
-        existingRegion.setCountry(country.getId());
-        log.info("saving country id to :{}", country.getId());
-
-        // Save the updated region
-        Region savedRegion = regionRepository.save(existingRegion);
-        log.info("Region updated successfully: {}", savedRegion);
-
-        // Convert to DTO and return
-        return convertToDto(savedRegion);
+        // Save only if an update occurred
+        if (isUpdated) {
+            log.info("Saving updated region with id {} and data {}", id, existingRegion);
+            return regionRepository.save(existingRegion);
+        } else {
+            log.info("No changes detected for region with id {}, update skipped.", id);
+            return existingRegion;
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.act.Gakos.controller.address;
 
 import com.act.Gakos.dto.address.RegionDto;
 import com.act.Gakos.entity.address.Region;
+import com.act.Gakos.exceptions.ResourceNotFoundException;
 import com.act.Gakos.repository.address.RegionRepository;
 import com.act.Gakos.service.address.RegionService;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class RegionController {
     }
 
     // Endpoint to get a specific region by ID
-    @GetMapping("/{id}")
+    @GetMapping("/search/{id}")
     public ResponseEntity<Region> getRegionById(@PathVariable Integer id) {
         Optional<Region> region = regionService.getRegionById(id);
         return region.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
@@ -117,46 +118,36 @@ public class RegionController {
         return new ResponseEntity<>(createdRegion, HttpStatus.CREATED);
     }
 
-
-//    @PutMapping("search/{id}")
-//    public ResponseEntity<RegionDto> updateRegion(
-//            @PathVariable Integer id,
-//            @RequestBody RegionDto regionDto) {
-//        RegionDto updatedRegion = regionService.updateRegion(id, regionDto);
-//        return ResponseEntity.ok(updatedRegion);
+//    @PutMapping("/search/{id}")
+//    public ResponseEntity<Region> updateRegion(@PathVariable Integer id, @RequestBody RegionDto regionDto) {
+//        log.info("Received request to update region with id {}", id);
+//        try {
+//            Region updatedRegion = regionService.updateRegion(id, regionDto);
+//            return new ResponseEntity<>(updatedRegion, HttpStatus.OK);
+//        } catch (ResourceNotFoundException e) {
+//            log.error("Error updating region with id {}: {}", id, e.getMessage());
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } catch (IllegalArgumentException e) {
+//            log.error("Invalid update data for region with id {}: {}", id, e.getMessage());
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
 //    }
 
-    @PutMapping("search/{id}")
-    public ResponseEntity<RegionDto> updateRegion(
-            @PathVariable Integer id,
-            @RequestBody RegionDto regionDto) {
-
-        log.info("checking for id:{} ", id);
-
-        // Check if the ID is valid (null or zero should be invalid in most cases)
-        if (id == null || id <= 0) {
-            log.info("Id is not null or greater than zero");
-            return ResponseEntity.badRequest().body(null);  // Or provide a meaningful error message
-        }
-
+    @PutMapping("/search/{id}")
+    public ResponseEntity<Region> updateRegion(@PathVariable Integer id, @RequestBody RegionDto regionDto) {
+        log.info("Received request to update region with id {}", id);
         try {
-            RegionDto updatedRegion = regionService.updateRegion(id, regionDto);
-            log.info("Updating region data: {}", updatedRegion);
-            if (updatedRegion == null) {
-                log.info("Updating region data is null");
-                return ResponseEntity.notFound().build();  // If region is not found
-            }
-            log.info("Updated successfully: {}", updatedRegion);
-            return ResponseEntity.ok(updatedRegion);  // Return the updated region
+            Region updatedRegion = regionService.updateRegion(id, regionDto);
+            return new ResponseEntity<>(updatedRegion, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            log.error("Error updating region with id {}: {}", id, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            // This catches cases where, for example, the region is not found
-            log.info("Region is not found");
-            return ResponseEntity.badRequest().body(null);
+            log.error("Invalid update data for region with id {}: {}", id, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            // For other unexpected exceptions
-            log.info("Other error");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);  // Or provide a message indicating failure
+            log.error("Unexpected error occurred while updating region with id {}: {}", id, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -165,4 +156,6 @@ public class RegionController {
         regionService.deleteRegion(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

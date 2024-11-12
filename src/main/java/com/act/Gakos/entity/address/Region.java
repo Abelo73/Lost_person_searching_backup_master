@@ -12,7 +12,8 @@ public class Region {
     private String name;
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+
     @JoinColumn(name = "country_id")  // Specifies foreign key column
     private Country country;
 
@@ -45,7 +46,17 @@ public class Region {
         return country;
     }
 
-    public void setCountry(Integer countryId) {
+    public void setCountry(Country country) {
         this.country = country;
+    }
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", country=" + country +
+                '}';
     }
 }
