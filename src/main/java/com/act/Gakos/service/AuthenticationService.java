@@ -24,7 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -47,12 +49,10 @@ public class AuthenticationService {
     }
 
 
-
-
-    public BaseResponse register(User request){
+    public BaseResponse register(User request) {
 
         Optional<User> existingUser = repository.findByUsername(request.getUsername());
-        if (existingUser.isPresent()){
+        if (existingUser.isPresent()) {
             throw new IllegalArgumentException("Username is already taken");
         }
 
@@ -75,14 +75,14 @@ public class AuthenticationService {
 
     }
 
-    public void validateUser(User user){
-        if (user.getFirstName().isEmpty()){
+    public void validateUser(User user) {
+        if (user.getFirstName().isEmpty()) {
             throw new RuntimeException("FirstName can not be empty");
         } else if (user.getLastName().isEmpty()) {
             throw new RuntimeException("Last name can not be empty");
         } else if (user.getUsername().isEmpty() || user.getUsername() == null) {
             throw new RuntimeException("Username can not be empty");
-        } else if (user.getPassword().isEmpty() || user.getPassword() ==null) {
+        } else if (user.getPassword().isEmpty() || user.getPassword() == null) {
             throw new RuntimeException("Password can not be empty");
         }
     }
@@ -191,7 +191,7 @@ public class AuthenticationService {
 
         } catch (BadCredentialsException | UsernameNotFoundException ex) {
             // Log the failed login attempt
-            logLoginAttempt(username,operatingSystem, ipAddress, deviceDetails, false);
+            logLoginAttempt(username, operatingSystem, ipAddress, deviceDetails, false);
 
             // Re-throw the exception or return an error message
             throw new RuntimeException("Invalid username or password");
@@ -213,15 +213,15 @@ public class AuthenticationService {
     }
 
 
-//    public List<LoginAttempt> getAllLoginAttempts(){
+    //    public List<LoginAttempt> getAllLoginAttempts(){
 //        return loginAttemptRepository.findAll();
 //    }
 //
-    public void validateLogin(User user){
-        if (user.getUsername() == null || user.getUsername().isEmpty()){
+    public void validateLogin(User user) {
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
             throw new RuntimeException("Username can not be empty");
         }
-        if (user.getPassword() ==  null || user.getPassword().isEmpty()){
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
             throw new RuntimeException("Password can not be empty");
         }
     }
@@ -231,7 +231,7 @@ public class AuthenticationService {
 //        return loginAttemptRepository.findAll(pageable);
 //    }
 
-    public List<User> users(){
+    public List<User> users() {
         List<User> users = repository.findAll();
         return users;
     }
@@ -252,8 +252,6 @@ public class AuthenticationService {
 //    }
 
 
-
-
     public UserDTO findById(Integer id) {
         Optional<User> existingUser = repository.findById(id);
         if (existingUser.isPresent()) {
@@ -262,7 +260,6 @@ public class AuthenticationService {
             throw new RuntimeException("User not found");
         }
     }
-
 
 
     public void deleteUser(Integer id) {
@@ -299,8 +296,8 @@ public class AuthenticationService {
     }
 
 
-    public Page<User> getUserByRole(Role role, Pageable pageable){
-        return  repository.findByRole(role, pageable);
+    public Page<User> getUserByRole(Role role, Pageable pageable) {
+        return repository.findByRole(role, pageable);
     }
 
     public User updateUser(Integer id, User updatedUser) {
@@ -333,7 +330,7 @@ public class AuthenticationService {
 //        return repository.findById(id);
 //    }
 
-    public Optional<User> getUserById(Integer id){
+    public Optional<User> getUserById(Integer id) {
         return repository.findById(id);
     }
 
@@ -377,6 +374,16 @@ public class AuthenticationService {
 
     public Page<User> searchUserBySearchTerm(String searchTerm, PageRequest pageable) {
         return repository.searchBySearchTerms(searchTerm, pageable);
+    }
+
+    public Map<String, Long> getLoginAttemptCounts() {
+        Map<String, Long> loginAttemptsCounts = new HashMap<>();
+        loginAttemptsCounts.put("totalAttempts", loginAttemptRepository.count());
+
+        loginAttemptsCounts.put("successfulAttempts", loginAttemptRepository.countSuccessfulAttempts());
+        loginAttemptsCounts.put("failedAttempts", loginAttemptRepository.countFailedAttempts());
+
+        return loginAttemptsCounts;
     }
 
 //
@@ -431,4 +438,4 @@ public class AuthenticationService {
 //    }
 
 
-}
+    }

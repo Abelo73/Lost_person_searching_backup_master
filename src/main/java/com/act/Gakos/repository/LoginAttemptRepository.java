@@ -18,9 +18,13 @@ public interface LoginAttemptRepository extends JpaRepository<LoginAttempt, Long
 
     @Query("SELECT la FROM LoginAttempt la WHERE la.success = :success AND la.operatingSystem = :operatingSystem")
     Page<LoginAttempt> findBySuccessAndOperatingSystem(@Param("success") Boolean success, @Param("operatingSystem") String operatingSystem, Pageable pageable);
-//    Page<LoginAttempt> findBySuccess(boolean success, Pageable pageable);
-//
-//    Page<LoginAttempt> findByOperatingSystem(String operatingSystem, Pageable pageable);
-//
-//    Page<LoginAttempt> findBySuccessAndOperatingSystem(Boolean success, String operatingSystem, Pageable pageable);
+
+
+    // Count only successful login attempts
+    @Query("SELECT COUNT(l) FROM LoginAttempt l WHERE l.success = true")
+    long countSuccessfulAttempts();
+
+    // Count only failed login attempts
+    @Query("SELECT COUNT(l) FROM LoginAttempt l WHERE l.success = false")
+    long countFailedAttempts();
 }
