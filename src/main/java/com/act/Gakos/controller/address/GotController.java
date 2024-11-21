@@ -87,8 +87,15 @@ public class GotController {
             @RequestParam(value = "zone", required = false) Integer zone,
             @RequestParam(value = "region", required = false) Integer region,
             @RequestParam(value = "country", required = false) Integer country,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
 
-            Pageable pageable) {
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
         return gotService.searchGotByKebeleId(kebele,woreda,zone,region, country, pageable);
     }
 
@@ -97,9 +104,14 @@ public class GotController {
     public Page<GotDto> searchKebele(
             @RequestParam(value = "got", required = false) Long got,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
+    ) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
         return gotService.searchKebeleByCriteria(got, pageable);
     }
 
@@ -109,7 +121,7 @@ public class GotController {
         return new ResponseEntity<>(createdGot, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/search/{id}")
     public ResponseEntity<Got> updateGot(@PathVariable Integer id, @RequestBody Got updatedGot) {
         try {
             Got got = gotService.updateGot(id, updatedGot);
@@ -119,7 +131,7 @@ public class GotController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/search/{id}")
     public ResponseEntity<Void> deleteGot(@PathVariable Integer id) {
         gotService.deleteGot(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

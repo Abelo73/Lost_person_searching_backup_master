@@ -3,7 +3,6 @@ package com.act.Gakos.controller.address;
 import com.act.Gakos.service.AuthenticationService;
 import com.act.Gakos.service.address.AddressDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

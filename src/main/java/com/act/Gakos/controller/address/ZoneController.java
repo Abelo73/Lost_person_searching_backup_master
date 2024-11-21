@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -87,7 +88,13 @@ public class ZoneController {
     @GetMapping("/search")
     public Page<ZoneDto> searchZoneByRegionId(
             @RequestParam(value = "region", required = false) Long region,
-            Pageable pageable) {
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "page", defaultValue="0") int page,
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
+) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
         return zoneService.searchZoneByRegionId(region, pageable);
     }
 
